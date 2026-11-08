@@ -348,25 +348,7 @@ a.btn.main{color:var(--ink)}
 .s-logo{display:block;height:24px;width:auto;max-width:160px;margin-bottom:8px}
 .z-logo{height:20px;width:auto}
 
-.joy{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);width:168px;height:168px;margin-left:-84px;z-index:4;pointer-events:none}
-.joy-arrows span{position:absolute;width:44px;height:44px;left:62px;top:62px;border-radius:50%;display:grid;place-items:center;
-  background:var(--glass);border:1px solid var(--glassline);color:var(--paper);opacity:0;transform:scale(.5);
-  transition:opacity .18s,transform .18s,background .12s,color .12s;box-shadow:0 6px 16px rgba(40,30,20,.14)}
-.joy.active .joy-arrows span{opacity:1}
-.joy.active .joy-arrows [data-d="w"]{transform:translateY(-62px)}
-.joy.active .joy-arrows [data-d="s"]{transform:translateY(62px)}
-.joy.active .joy-arrows [data-d="a"]{transform:translateX(-62px)}
-.joy.active .joy-arrows [data-d="d"]{transform:translateX(62px)}
-.joy-arrows span.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.joy-knob{position:absolute;left:52px;top:52px;width:64px;height:64px;border-radius:50%;pointer-events:auto;touch-action:none;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1.5px solid var(--glassline);
-  background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--paper);
-  box-shadow:0 8px 22px rgba(40,30,20,.18);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:background .15s}
-.joy-knob i{width:18px;height:18px;background:
-  linear-gradient(currentColor,currentColor) center/2px 100% no-repeat,linear-gradient(currentColor,currentColor) center/100% 2px no-repeat;opacity:.7}
-.joy-knob b{font-size:11.5px;font-weight:800}
-.joy.active .joy-knob{background:var(--paper);color:#fff;transition:none}
-.hint{bottom:calc(env(safe-area-inset-bottom,0px) + 104px)}
+
 </style>
 </head>
 <body>
@@ -405,10 +387,6 @@ a.btn.main{color:var(--ink)}
       <button class="btn" id="openList" type="button">부스 바로가기</button>
       <button class="btn" id="toLanding" type="button">다른 관으로</button>
     </div>
-  </div>
-  <div class="joy" id="joy">
-    <div class="joy-arrows" aria-hidden="true"><span data-d="w"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(0deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span><span data-d="d"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span><span data-d="s"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(180deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span><span data-d="a"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(-90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span></div>
-    <button class="joy-knob" id="joyKnob" type="button" aria-label="누른 채로 밀어서 이동"><i aria-hidden="true"></i><b>이동</b></button>
   </div>
   <div class="hint chip" id="hint">끌어서 둘러보기 · 바닥 누르면 이동 · W A S D · 부스 누르면 구성과 금액</div>
 
@@ -1039,8 +1017,8 @@ function buildWorld(key){
   const clk=[];h.booths.slice(0,8).forEach((p,i)=>makeBooth(scene,clk,p,i,t,hallIdx));
   addZones(scene,h);
   const nav=makeNav(scene,t);
-  const guide=makeGuide(scene,t);
-  return{scene,clk,floor,guide,nav};
+  const guide=null;
+  return{scene,clk,floor,guide,nav,accent:t.accent};
 }
 
 
@@ -1131,49 +1109,45 @@ function addZones(scene,h){
 
 /* ---------------- 이동 방향 표시 (바닥 화살표 + 도착 지점) ---------------- */
 function makeNav(scene,t){
-  const sh=new THREE.Shape();sh.moveTo(0,.62);sh.lineTo(.36,.18);sh.lineTo(.13,.18);sh.lineTo(.13,-.42);sh.lineTo(-.13,-.42);sh.lineTo(-.13,.18);sh.lineTo(-.36,.18);sh.closePath();
-  const am=new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:0,depthWrite:false});
-  const arrowMesh=new THREE.Mesh(new THREE.ShapeGeometry(sh),am);arrowMesh.rotation.x=-Math.PI/2;arrowMesh.renderOrder=4;
-  const arrow=new THREE.Group();arrow.add(arrowMesh);arrow.visible=false;scene.add(arrow);
+  /* 바닥 화살표 4개(앞·뒤·왼쪽·오른쪽)를 항상 내 앞 바닥에 표시. 누르면 그 방향으로 한 걸음 이동 */
+  const sh=new THREE.Shape();sh.moveTo(0,.36);sh.lineTo(.34,-.02);sh.lineTo(.14,-.02);sh.lineTo(.14,-.3);sh.lineTo(-.14,-.3);sh.lineTo(-.14,-.02);sh.lineTo(-.34,-.02);sh.closePath();
+  const geo=new THREE.ShapeGeometry(sh);
+  const compass=new THREE.Group();compass.scale.set(1,1,1.55);scene.add(compass);
+  const defs=[["w",0,0,-2.5],["s",Math.PI,0,-1.55],["a",Math.PI/2,-.98,-2.02],["d",-Math.PI/2,.98,-2.02]];
+  const arrows={},hits=[];
+  defs.forEach(([k,ang,x,z])=>{
+    const holder=new THREE.Group();holder.position.set(x,.03,z);holder.rotation.y=ang;compass.add(holder);
+    const edge=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:"#ffffff",transparent:true,opacity:.95,depthWrite:false}));
+    edge.rotation.x=-Math.PI/2;edge.scale.set(1.22,1.22,1);edge.renderOrder=4;holder.add(edge);
+    const fill=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:.9,depthWrite:false}));
+    fill.rotation.x=-Math.PI/2;fill.position.y=.004;fill.renderOrder=5;holder.add(fill);
+    const hit=new THREE.Mesh(new THREE.CircleGeometry(.48,20),new THREE.MeshBasicMaterial({visible:false}));
+    hit.rotation.x=-Math.PI/2;hit.position.y=.01;hit.userData.navDir=k;holder.add(hit);hits.push(hit);
+    arrows[k]={holder,fill,flash:0};
+  });
   const tm=new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:0,depthWrite:false});
   const target=new THREE.Mesh(new THREE.RingGeometry(.26,.34,40),tm);target.rotation.x=-Math.PI/2;target.renderOrder=4;target.visible=false;scene.add(target);
-  return{arrow,am,target,tm,prev:new THREE.Vector3(),dir:new THREE.Vector3(0,0,-1),a:0};
+  return{compass,arrows,hits,target,tm,used:false};
 }
 function animateNav(dt){
-  const n=world&&world.nav;if(!n)return;
-  const v=new THREE.Vector3(pos.x-n.prev.x,0,pos.z-n.prev.z);n.prev.copy(pos);
-  const held=keys.w||keys.s||keys.a||keys.d||keys.arrowup||keys.arrowdown;
-  const moving=held&&v.length()>dt*.35;
-  if(moving)n.dir.lerp(v.normalize(),.35).normalize();
-  n.a=moving?Math.min(.9,n.a+dt*8):(held?n.a:0);
-  n.am.opacity=n.a;n.arrow.visible=n.a>.02;
-  if(n.arrow.visible){n.arrow.position.set(pos.x+n.dir.x*1.9,.035,pos.z+n.dir.z*1.9);n.arrow.rotation.y=Math.atan2(-n.dir.x,-n.dir.z);}
-  // 바닥을 눌러 이동할 때는 도착 지점 링
-  if(moveTarget){n.target.visible=true;n.target.position.set(moveTarget.x,.03,moveTarget.z);n.tm.opacity=.85;
-    if(!reduce)n.target.scale.setScalar(1+Math.sin(performance.now()/180)*.08);}
+  const n=world&&world.nav;if(!n)return;const tm=performance.now()/1000;
+  n.compass.position.set(pos.x,0,pos.z);n.compass.rotation.y=yaw;
+  const held={w:keys.w||keys.arrowup,s:keys.s||keys.arrowdown,a:keys.a,d:keys.d};
+  for(const k in n.arrows){const ar=n.arrows[k];ar.flash=Math.max(0,ar.flash-dt);
+    const on=held[k]||ar.flash>0;
+    ar.fill.material.color.set(on?"#1d1a17":world.accent);ar.fill.material.opacity=on?1:.9;
+    const pulse=(!n.used&&!reduce)?1+Math.sin(tm*4)*.07:1;ar.holder.scale.setScalar((on?1.15:1)*pulse);}
+  if(moveTarget){n.target.visible=true;n.target.position.set(moveTarget.x,.03,moveTarget.z);n.tm.opacity=.85;}
   else if(n.target.visible){n.tm.opacity-=dt*3;if(n.tm.opacity<=0)n.target.visible=false;}
 }
-function bindDpad(){
-  /* "이동" 버튼을 누른 채 미는 방향으로 이동. 누르는 동안에만 전후좌우 화살표가 보이고, 떼면 사라짐 */
-  const joy=$("joy"),knob=$("joyKnob"),R=40,DZ=12;let id=null,cx=0,cy=0;
-  const arrows={};joy.querySelectorAll(".joy-arrows span").forEach(a=>arrows[a.dataset.d]=a);
-  const set=(dx,dy)=>{const on={w:dy<-DZ,s:dy>DZ,a:dx<-DZ,d:dx>DZ};
-    for(const k in on){keys[k]=on[k];arrows[k].classList.toggle("on",on[k]);}};
-  const end=()=>{if(id===null)return;id=null;set(0,0);joy.classList.remove("active");knob.style.transform="";};
-  knob.addEventListener("pointerdown",e=>{e.preventDefault();id=e.pointerId;try{knob.setPointerCapture(id);}catch(_){}
-    const r=knob.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2;joy.classList.add("active");hideHint();set(0,0);});
-  knob.addEventListener("pointermove",e=>{if(e.pointerId!==id)return;let dx=e.clientX-cx,dy=e.clientY-cy;const l=Math.hypot(dx,dy);
-    if(l>R){dx*=R/l;dy*=R/l;}knob.style.transform=`translate(${dx}px,${dy}px)`;set(dx,dy);});
-  ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>knob.addEventListener(ev,end));
-  knob.addEventListener("contextmenu",e=>e.preventDefault());
-  // 키보드(W A S D · 방향키)로 움직일 때도 누르는 동안만 화살표 표시
-  const map={w:"w",arrowup:"w",s:"s",arrowdown:"s",a:"a",d:"d"};
-  const sync=()=>{if(id!==null)return;const any=["w","s","a","d"].some(k=>keys[k]||(k==="w"&&keys.arrowup)||(k==="s"&&keys.arrowdown));
-    joy.classList.toggle("active",any);for(const k in arrows)arrows[k].classList.toggle("on",!!(keys[k]||(k==="w"&&keys.arrowup)||(k==="s"&&keys.arrowdown)));};
-  addEventListener("keydown",e=>{if(map[e.key.toLowerCase()])setTimeout(sync,0);});
-  addEventListener("keyup",e=>{if(map[e.key.toLowerCase()])setTimeout(sync,0);});
-  addEventListener("blur",end);
+function stepDir(k){
+  const f=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw)),r=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
+  const v={w:f,s:f.clone().negate(),a:r.clone().negate(),d:r}[k];
+  const from=moveTarget?moveTarget.clone():pos.clone();
+  moveTarget=clampPos(from.addScaledVector(v,2.4));yawTarget=null;
+  const n=world.nav;n.used=true;n.arrows[k].flash=.35;hideHint();
 }
+function bindDpad(){}
 
 function ensureRenderer(){
   if(renderer)return;
@@ -1209,12 +1183,13 @@ function enterHall(k){
     $("hallUI").style.setProperty("--gold",h.theme.uiGold||"#c9a86a");
     $("hallName").textContent=h.name;updateCount();
     ["topBook","sBook"].forEach(id=>{const a=$(id);if(h.booking){a.href=h.booking;a.hidden=false;}else a.hidden=true;});
-    pos.set(0,EYE,3);yaw=0;pitch=-.1;if(world.nav)world.nav.prev.copy(pos);moveTarget=yawTarget=pitchTarget=null;
+    pos.set(0,EYE,3);yaw=0;pitch=-.1;moveTarget=yawTarget=pitchTarget=null;
     closeSheet();closePanel();$("list").hidden=true;
-    $("hint").textContent=COARSE?"아래 이동 버튼을 누른 채 밀면 전후좌우 이동 · 화면을 밀면 둘러보기":"이동 버튼을 누른 채 끌거나 W A S D로 전후좌우 이동 · 드래그로 둘러보기";
+    $("hint").textContent=COARSE?"바닥 화살표를 터치하면 그 방향으로 이동 · 화면을 밀면 둘러보기":"바닥 화살표를 클릭하거나 W A S D로 이동 · 드래그로 둘러보기";
     hintOff=false;$("hint").classList.remove("off");
     $("loading").classList.add("done");
     $("hint").classList.add("off");showGuide(k);
+    if(world.nav)world.nav.used=false;
     if(pendingOpen&&pendingOpen.hall===k){const po=pendingOpen;pendingOpen=null;openPanel(po.menu,po.label);}else showAsk();
     bumpCount(k);
   },30);
@@ -1239,7 +1214,7 @@ function update(dt){
 }
 const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
 function pick(e){const rc=renderer.domElement.getBoundingClientRect();ndc.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
-  ray.setFromCamera(ndc,camera);return ray.intersectObjects([...world.clk,world.floor],false)[0];}
+  ray.setFromCamera(ndc,camera);return ray.intersectObjects([...world.nav.hits,...world.clk,world.floor],false)[0];}
 let hintOff=false;function hideHint(){if(!hintOff){hintOff=true;$("hint").classList.add("off");}}
 function bindInput(){
   const el=renderer.domElement;let drag=null;
@@ -1247,9 +1222,10 @@ function bindInput(){
   el.addEventListener("pointermove",e=>{if(!world)return;
     if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>6){drag.moved=true;yawTarget=pitchTarget=null;hideHint();}
       if(drag.moved){yaw=drag.yaw+dx*.0045;pitch=Math.max(-.6,Math.min(.45,drag.pitch+dy*.0035));}}
-    else if(e.pointerType==="mouse"){const h=pick(e);el.style.cursor=h&&h.object.userData.booth!==undefined?"pointer":"default";}});
+    else if(e.pointerType==="mouse"){const h=pick(e);el.style.cursor=h&&(h.object.userData.booth!==undefined||h.object.userData.navDir)?"pointer":"default";}});
   el.addEventListener("pointerup",e=>{if(world&&drag&&!drag.moved){const h=pick(e);
-      if(h){if(h.object.userData.booth!==undefined)openBooth(h.object.userData.booth);
+      if(h){if(h.object.userData.navDir)stepDir(h.object.userData.navDir);
+        else if(h.object.userData.booth!==undefined)openBooth(h.object.userData.booth);
         else if(h.object.userData.floor){moveTarget=clampPos(new THREE.Vector3(h.point.x,EYE,h.point.z));hideHint();hideGuide();}}}
     drag=null;});
   el.addEventListener("pointercancel",()=>drag=null);
