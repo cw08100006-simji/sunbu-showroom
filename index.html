@@ -347,6 +347,17 @@ a.btn.main{color:var(--ink)}
 
 .s-logo{display:block;height:24px;width:auto;max-width:160px;margin-bottom:8px}
 .z-logo{height:16px;width:auto}
+
+.dpad{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:4;
+  display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(2,54px);gap:6px;
+  grid-template-areas:". up ." "lf dn rt";touch-action:none;user-select:none;-webkit-user-select:none}
+.dpad .up{grid-area:up}.dpad .lf{grid-area:lf}.dpad .dn{grid-area:dn}.dpad .rt{grid-area:rt}
+.dpad button{display:grid;place-items:center;border-radius:16px;border:1px solid var(--glassline);background:var(--glass);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--paper);box-shadow:0 6px 18px rgba(40,30,20,.14);
+  -webkit-touch-callout:none;transition:background .12s,color .12s,transform .12s}
+.dpad button.on{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(.94)}
+.hint{bottom:calc(env(safe-area-inset-bottom,0px) + 136px)}
+@media (max-width:720px){.dpad{grid-template-columns:repeat(3,58px);grid-template-rows:repeat(2,58px)}}
 </style>
 </head>
 <body>
@@ -385,6 +396,12 @@ a.btn.main{color:var(--ink)}
       <button class="btn" id="openList" type="button">부스 바로가기</button>
       <button class="btn" id="toLanding" type="button">다른 관으로</button>
     </div>
+  </div>
+  <div class="dpad" id="dpad" role="group" aria-label="이동 방향">
+    <button type="button" class="up" data-k="w" aria-label="앞으로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(0deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
+    <button type="button" class="lf" data-k="a" aria-label="왼쪽으로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(-90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
+    <button type="button" class="dn" data-k="s" aria-label="뒤로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(180deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
+    <button type="button" class="rt" data-k="d" aria-label="오른쪽으로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
   </div>
   <div class="hint chip" id="hint">끌어서 둘러보기 · 바닥 누르면 이동 · W A S D · 부스 누르면 구성과 금액</div>
 
@@ -1014,8 +1031,9 @@ function buildWorld(key){
     [-1,1].forEach(s=>{const wire=box(.01,CEIL_H-.08-3.9-hh/2,.01,std("#888",.3,.8));wire.position.set(s*w*.42,(CEIL_H-.08+3.9+hh/2)/2,-3);scene.add(wire);});}
   const clk=[];h.booths.slice(0,8).forEach((p,i)=>makeBooth(scene,clk,p,i,t,hallIdx));
   addZones(scene,h);
+  const nav=makeNav(scene,t);
   const guide=makeGuide(scene,t);
-  return{scene,clk,floor,guide};
+  return{scene,clk,floor,guide,nav};
 }
 
 
@@ -1103,13 +1121,50 @@ function addZones(scene,h){
   });
 }
 
+
+/* ---------------- 이동 방향 표시 (바닥 화살표 + 도착 지점) ---------------- */
+function makeNav(scene,t){
+  const sh=new THREE.Shape();sh.moveTo(0,.62);sh.lineTo(.36,.18);sh.lineTo(.13,.18);sh.lineTo(.13,-.42);sh.lineTo(-.13,-.42);sh.lineTo(-.13,.18);sh.lineTo(-.36,.18);sh.closePath();
+  const am=new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:0,depthWrite:false});
+  const arrowMesh=new THREE.Mesh(new THREE.ShapeGeometry(sh),am);arrowMesh.rotation.x=-Math.PI/2;arrowMesh.renderOrder=4;
+  const arrow=new THREE.Group();arrow.add(arrowMesh);arrow.visible=false;scene.add(arrow);
+  const tm=new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:0,depthWrite:false});
+  const target=new THREE.Mesh(new THREE.RingGeometry(.26,.34,40),tm);target.rotation.x=-Math.PI/2;target.renderOrder=4;target.visible=false;scene.add(target);
+  return{arrow,am,target,tm,prev:new THREE.Vector3(),dir:new THREE.Vector3(0,0,-1),a:0};
+}
+function animateNav(dt){
+  const n=world&&world.nav;if(!n)return;
+  const v=new THREE.Vector3(pos.x-n.prev.x,0,pos.z-n.prev.z);n.prev.copy(pos);
+  const moving=v.length()>dt*.35;
+  if(moving)n.dir.lerp(v.normalize(),.35).normalize();
+  n.a+=((moving?.9:0)-n.a)*Math.min(1,dt*(moving?10:5));
+  n.am.opacity=n.a;n.arrow.visible=n.a>.02;
+  if(n.arrow.visible){n.arrow.position.set(pos.x+n.dir.x*1.9,.035,pos.z+n.dir.z*1.9);n.arrow.rotation.y=Math.atan2(-n.dir.x,-n.dir.z);}
+  // 바닥을 눌러 이동할 때는 도착 지점 링
+  if(moveTarget){n.target.visible=true;n.target.position.set(moveTarget.x,.03,moveTarget.z);n.tm.opacity=.85;
+    if(!reduce)n.target.scale.setScalar(1+Math.sin(performance.now()/180)*.08);}
+  else if(n.target.visible){n.tm.opacity-=dt*3;if(n.tm.opacity<=0)n.target.visible=false;}
+}
+function bindDpad(){
+  const btns=document.querySelectorAll("#dpad button");
+  btns.forEach(b=>{const k=b.dataset.k;
+    const on=e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId);}catch(_){}keys[k]=true;b.classList.add("on");hideHint();};
+    const off=()=>{keys[k]=false;b.classList.remove("on");};
+    b.addEventListener("pointerdown",on);["pointerup","pointercancel","lostpointercapture"].forEach(ev=>b.addEventListener(ev,off));
+    b.addEventListener("contextmenu",e=>e.preventDefault());});
+  // 키보드로 움직일 때도 버튼에 불이 들어오게
+  const map={w:"w",arrowup:"w",s:"s",arrowdown:"s",a:"a",d:"d"};
+  addEventListener("keydown",e=>{const k=map[e.key.toLowerCase()];if(k)document.querySelector(`#dpad [data-k="${k}"]`).classList.add("on");});
+  addEventListener("keyup",e=>{const k=map[e.key.toLowerCase()];if(k)document.querySelector(`#dpad [data-k="${k}"]`).classList.remove("on");});
+}
+
 function ensureRenderer(){
   if(renderer)return;
   const stage=$("stage");
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));stage.appendChild(renderer.domElement);renderer.domElement.tabIndex=0;
   camera=new THREE.PerspectiveCamera(62,1,.05,120);camera.rotation.order="YXZ";
-  bindInput();
+  bindInput();bindDpad();
   addEventListener("resize",resize);
   let last=performance.now();
   (function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(world){update(dt);renderer.render(world.scene,camera);}requestAnimationFrame(loop);})(last);
@@ -1137,9 +1192,9 @@ function enterHall(k){
     $("hallUI").style.setProperty("--gold",h.theme.uiGold||"#c9a86a");
     $("hallName").textContent=h.name;updateCount();
     ["topBook","sBook"].forEach(id=>{const a=$(id);if(h.booking){a.href=h.booking;a.hidden=false;}else a.hidden=true;});
-    pos.set(0,EYE,3);yaw=0;pitch=-.1;moveTarget=yawTarget=pitchTarget=null;
+    pos.set(0,EYE,3);yaw=0;pitch=-.1;if(world.nav)world.nav.prev.copy(pos);moveTarget=yawTarget=pitchTarget=null;
     closeSheet();closePanel();$("list").hidden=true;
-    $("hint").textContent=COARSE?"밀어서 둘러보기 · 바닥 터치로 이동 · 부스를 터치하면 구성과 금액":"드래그로 둘러보기 · 바닥 클릭으로 이동 · W A S D · 부스를 클릭하면 구성과 금액";
+    $("hint").textContent=COARSE?"화살표 버튼으로 전후좌우 이동 · 밀어서 둘러보기 · 부스를 터치하면 구성과 금액":"화살표 버튼·W A S D로 전후좌우 이동 · 드래그로 둘러보기 · 부스를 클릭하면 구성과 금액";
     hintOff=false;$("hint").classList.remove("off");
     $("loading").classList.add("done");
     $("hint").classList.add("off");showGuide(k);
@@ -1163,7 +1218,7 @@ function update(dt){
   if(yawTarget!==null){const d=angDiff(yaw,yawTarget);yaw+=d*k;if(Math.abs(d)<.002)yawTarget=null;}
   if(pitchTarget!==null){pitch+=(pitchTarget-pitch)*k;if(Math.abs(pitchTarget-pitch)<.002)pitchTarget=null;}
   camera.position.copy(pos);camera.rotation.set(pitch,yaw,0);
-  animateGuide(dt);
+  animateGuide(dt);animateNav(dt);
 }
 const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
 function pick(e){const rc=renderer.domElement.getBoundingClientRect();ndc.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
