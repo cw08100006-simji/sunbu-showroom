@@ -1110,20 +1110,27 @@ function addZones(scene,h){
 /* ---------------- 이동 방향 표시 (바닥 화살표 + 도착 지점) ---------------- */
 function makeNav(scene,t){
   /* 바닥 화살표 4개(앞·뒤·왼쪽·오른쪽)를 항상 내 앞 바닥에 표시. 누르면 그 방향으로 한 걸음 이동 */
-  const sh=new THREE.Shape();sh.moveTo(0,.36);sh.lineTo(.34,-.02);sh.lineTo(.14,-.02);sh.lineTo(.14,-.3);sh.lineTo(-.14,-.3);sh.lineTo(-.14,-.02);sh.lineTo(-.34,-.02);sh.closePath();
-  const geo=new THREE.ShapeGeometry(sh);
+  /* 화살표 테두리만 보이고 안쪽은 투명 → 바닥 대리석이 비쳐 보임 */
+  const P=[[0,.42],[.4,-.02],[.17,-.02],[.17,-.34],[-.17,-.34],[-.17,-.02],[-.4,-.02]];
+  const cy=.02,k=.66;
+  const outer=new THREE.Shape();P.forEach(([x,y],i)=>i?outer.lineTo(x,y):outer.moveTo(x,y));outer.closePath();
+  const hole=new THREE.Path();[...P].reverse().forEach(([x,y],i)=>{const X=x*k,Y=cy+(y-cy)*k;i?hole.lineTo(X,Y):hole.moveTo(X,Y);});hole.closePath();
+  outer.holes.push(hole);
+  const geo=new THREE.ShapeGeometry(outer);
+  const inner=new THREE.Shape();P.forEach(([x,y],i)=>{const X=x*k,Y=cy+(y-cy)*k;i?inner.lineTo(X,Y):inner.moveTo(X,Y);});inner.closePath();
+  const fillGeo=new THREE.ShapeGeometry(inner);
   const compass=new THREE.Group();compass.scale.set(1,1,1.55);scene.add(compass);
   const defs=[["w",0,0,-2.5],["s",Math.PI,0,-1.55],["a",Math.PI/2,-.98,-2.02],["d",-Math.PI/2,.98,-2.02]];
   const arrows={},hits=[];
   defs.forEach(([k,ang,x,z])=>{
     const holder=new THREE.Group();holder.position.set(x,.03,z);holder.rotation.y=ang;compass.add(holder);
-    const edge=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:"#ffffff",transparent:true,opacity:.95,depthWrite:false}));
-    edge.rotation.x=-Math.PI/2;edge.scale.set(1.22,1.22,1);edge.renderOrder=4;holder.add(edge);
-    const fill=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:.9,depthWrite:false}));
-    fill.rotation.x=-Math.PI/2;fill.position.y=.004;fill.renderOrder=5;holder.add(fill);
+    const edge=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:.95,depthWrite:false}));
+    edge.rotation.x=-Math.PI/2;edge.position.y=.004;edge.renderOrder=5;holder.add(edge);
+    const fill=new THREE.Mesh(fillGeo,new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:0,depthWrite:false}));
+    fill.rotation.x=-Math.PI/2;fill.renderOrder=4;holder.add(fill);
     const hit=new THREE.Mesh(new THREE.CircleGeometry(.48,20),new THREE.MeshBasicMaterial({visible:false}));
     hit.rotation.x=-Math.PI/2;hit.position.y=.01;hit.userData.navDir=k;holder.add(hit);hits.push(hit);
-    arrows[k]={holder,fill,flash:0};
+    arrows[k]={holder,fill,edge,flash:0};
   });
   const tm=new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:0,depthWrite:false});
   const target=new THREE.Mesh(new THREE.RingGeometry(.26,.34,40),tm);target.rotation.x=-Math.PI/2;target.renderOrder=4;target.visible=false;scene.add(target);
@@ -1135,7 +1142,7 @@ function animateNav(dt){
   const held={w:keys.w||keys.arrowup,s:keys.s||keys.arrowdown,a:keys.a,d:keys.d};
   for(const k in n.arrows){const ar=n.arrows[k];ar.flash=Math.max(0,ar.flash-dt);
     const on=held[k]||ar.flash>0;
-    ar.fill.material.color.set(on?"#1d1a17":world.accent);ar.fill.material.opacity=on?1:.9;
+    ar.fill.material.opacity=on?.35:0;ar.edge.material.color.set(on?"#1d1a17":world.accent);
     const pulse=(!n.used&&!reduce)?1+Math.sin(tm*4)*.07:1;ar.holder.scale.setScalar((on?1.15:1)*pulse);}
   if(moveTarget){n.target.visible=true;n.target.position.set(moveTarget.x,.03,moveTarget.z);n.tm.opacity=.85;}
   else if(n.target.visible){n.tm.opacity-=dt*3;if(n.tm.opacity<=0)n.target.visible=false;}
