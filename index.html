@@ -573,31 +573,33 @@ const HALLS = {
     name:"대형가전 전문관", en:"MAJOR APPLIANCES", booking:"https://naver.me/I5wWkLrg", desc:"TV · 냉장고 · 세탁기 · 에어컨 패키지를 한자리에서",
     endLine:"다 있다, 젤 싸다",
     theme:{trim:"#b8955a",sign:{gold:"#e0c286",accent:"#ff5252"},accent:"#e0322f",uiGold:"#9a7a46"},
+    /* 브랜드관: 왼쪽(부스 1~4) LG전자 · 오른쪽(부스 5~8) 삼성전자 */
+    zones:[{side:-1,name:"LG전자 브랜드관",en:"LG ELECTRONICS",color:"#A50034"},{side:1,name:"삼성전자 브랜드관",en:"SAMSUNG ELECTRONICS",color:"#1428A0"}],
     booths:[
       {brand:"LG",name:"OLED 77형 거실 풀세트",tagline:"큰 화면에 사운드바와 스탠드 에어컨까지, 거실을 한 번에 바꾸는 구성",price:6490000,list:7980000,
         items:[{type:"tv",inch:77,label:"TV",spec:"OLED 77형"},{type:"sound",label:"사운드바",spec:"3.1.2채널"},{type:"aircon",label:"에어컨",spec:"스탠드형 2in1"}],
         perks:["설치비 무료","폐가전 무상 수거","제휴카드 추가 할인"]},
-      {brand:"삼성",name:"Neo QLED 85형 + 냉장고",tagline:"85형 대화면과 4도어 냉장고를 함께 들이는 이사 인기 구성",price:5890000,list:7120000,
-        items:[{type:"tv",inch:85,label:"TV",spec:"Neo QLED 85형"},{type:"fridge",label:"냉장고",spec:"4도어 870L급",color:"#cfc7bb"},{type:"sound",label:"사운드바",spec:"5.1채널"}],
-        perks:["설치비 무료","벽걸이 브라켓 증정","구독 전환 가능"]},
       {brand:"LG",name:"신혼 4종 패키지",tagline:"TV · 냉장고 · 워시타워 · 공기청정기, 신혼집 필수 가전 한 번에",price:7290000,list:8960000,
         items:[{type:"tv",inch:65,label:"TV",spec:"OLED 65형"},{type:"fridge",label:"냉장고",spec:"오브제 4도어",color:"#b9c3c0"},{type:"tower",label:"워시타워",spec:"25kg / 21kg"},{type:"purifier",label:"공기청정기",spec:"원형 360°"}],
         perks:["혼수 추가 사은품","무료 배송·설치","5년 무상 A/S(구독 시)"]},
-      {brand:"삼성",name:"신혼 4종 패키지",tagline:"비스포크 라인으로 색감 맞춘 주방·세탁·거실 구성",price:6990000,list:8540000,
-        items:[{type:"tv",inch:65,label:"TV",spec:"QLED 65형"},{type:"fridge",label:"냉장고",spec:"비스포크 4도어",color:"#d9cbbd"},{type:"tower",label:"세탁건조기",spec:"원바디 25kg / 20kg"},{type:"purifier",label:"공기청정기",spec:"비스포크 큐브"}],
-        perks:["혼수 추가 사은품","무료 배송·설치","제휴카드 추가 할인"]},
       {brand:"LG",name:"75형 이사 3종",tagline:"이사 날 한 번에 설치하는 TV · 에어컨 · 세탁기",price:4590000,list:5620000,
         items:[{type:"tv",inch:75,label:"TV",spec:"QNED 75형"},{type:"aircon",label:"에어컨",spec:"스탠드형 2in1"},{type:"washer",label:"세탁기",spec:"드럼 24kg"}],
         perks:["설치 일정 맞춤","폐가전 무상 수거","구독 전환 가능"]},
-      {brand:"삼성·LG",name:"자취 스타터 3종",tagline:"원룸에 맞춘 크기로 꼭 필요한 것만",price:1690000,list:2150000,
-        items:[{type:"tv",inch:43,label:"TV",spec:"UHD 43형"},{type:"fridge",label:"냉장고",spec:"일반형 300L급",small:true,color:"#d8d8d6"},{type:"washer",label:"세탁기",spec:"드럼 12kg"}],
-        perks:["당일 상담 가능","무료 배송·설치","카드 무이자 할부"]},
+      {brand:"LG",name:"혼수 실속 3종",tagline:"예산은 지키고 핵심 가전은 챙기는 구성",price:3790000,list:4680000,
+        items:[{type:"tv",inch:55,label:"TV",spec:"OLED 55형"},{type:"fridge",label:"냉장고",spec:"양문형 800L급",color:"#c9c4bc"},{type:"washer",label:"세탁기",spec:"드럼 21kg"}],
+        perks:["혼수 추가 사은품","무료 배송·설치","카드 무이자 할부"]},
+      {brand:"삼성",name:"Neo QLED 85형 + 냉장고",tagline:"85형 대화면과 4도어 냉장고를 함께 들이는 이사 인기 구성",price:5890000,list:7120000,
+        items:[{type:"tv",inch:85,label:"TV",spec:"Neo QLED 85형"},{type:"fridge",label:"냉장고",spec:"4도어 870L급",color:"#cfc7bb"},{type:"sound",label:"사운드바",spec:"5.1채널"}],
+        perks:["설치비 무료","벽걸이 브라켓 증정","구독 전환 가능"]},
+      {brand:"삼성",name:"신혼 4종 패키지",tagline:"비스포크 라인으로 색감 맞춘 주방·세탁·거실 구성",price:6990000,list:8540000,
+        items:[{type:"tv",inch:65,label:"TV",spec:"QLED 65형"},{type:"fridge",label:"냉장고",spec:"비스포크 4도어",color:"#d9cbbd"},{type:"tower",label:"세탁건조기",spec:"원바디 25kg / 20kg"},{type:"purifier",label:"공기청정기",spec:"비스포크 큐브"}],
+        perks:["혼수 추가 사은품","무료 배송·설치","제휴카드 추가 할인"]},
       {brand:"삼성",name:"OLED 77형 + 에어컨",tagline:"OLED 화질과 2in1 에어컨으로 거실과 안방을 같이",price:6190000,list:7490000,
         items:[{type:"tv",inch:77,label:"TV",spec:"OLED 77형"},{type:"aircon",label:"에어컨",spec:"무풍 2in1"},{type:"purifier",label:"공기청정기",spec:"비스포크 큐브"}],
         perks:["설치비 무료","제휴카드 추가 할인","구독 전환 가능"]},
-      {brand:"LG",name:"혼수 실속 3종",tagline:"예산은 지키고 핵심 가전은 챙기는 구성",price:3790000,list:4680000,
-        items:[{type:"tv",inch:55,label:"TV",spec:"OLED 55형"},{type:"fridge",label:"냉장고",spec:"양문형 800L급",color:"#c9c4bc"},{type:"washer",label:"세탁기",spec:"드럼 21kg"}],
-        perks:["혼수 추가 사은품","무료 배송·설치","카드 무이자 할부"]}
+      {brand:"삼성",name:"자취 스타터 3종",tagline:"원룸에 맞춘 크기로 꼭 필요한 것만",price:1690000,list:2150000,
+        items:[{type:"tv",inch:43,label:"TV",spec:"Crystal UHD 43형"},{type:"fridge",label:"냉장고",spec:"일반형 300L급",small:true,color:"#d8d8d6"},{type:"washer",label:"세탁기",spec:"드럼 12kg"}],
+        perks:["당일 상담 가능","무료 배송·설치","카드 무이자 할부"]}
     ]},
   living:{
     name:"생활·주방 가전 전문관", en:"LIVING & KITCHEN", desc:"식기세척기 · 전기레인지 · 청소기 · 정수기까지",
@@ -785,6 +787,8 @@ function mountHero(grp,it,seed,t,p){
   else if(it.type==="watch"){add(box(.5,1.8,.04,std("#1a1a1e",.6)),0,1.6,-.45);add(box(.86,1.0,.08,std("#202024",.2,.6)),0,1.6,-.41);scr(.74,.88,0,1.6,true).position.z=-.365;}
 }
 function makeBooth(scene,clk,p,i,t,hallIdx){
+  const zone=boothZone(HALL_KEYS[hallIdx],i);
+  if(zone)t={...t,trim:zone.color,sign:{...t.sign,bg:zone.color,fg:"#ffffff",mute:"rgba(255,255,255,.85)",gold:"#ffffff",accent:"#ffffff"}};
   const {side,x,z}=boothSlot(i);
   const grp=new THREE.Group();grp.position.set(x,0,z);grp.rotation.y=side<0?Math.PI/2:-Math.PI/2;
   const trim=std(t.trim,.35,.8);
@@ -792,9 +796,9 @@ function makeBooth(scene,clk,p,i,t,hallIdx){
   const back=box(5.2,3.5,.3,new THREE.MeshStandardMaterial({map:t._oak,roughness:.7}));back.position.set(0,1.75,-.6);grp.add(back);
   [-1,1].forEach(sx=>{const pil=box(.06,3.5,.34,trim);pil.position.set(sx*2.6,1.75,-.6);grp.add(pil);});
   const cap=box(5.3,.04,.36,trim);cap.position.set(0,3.52,-.6);grp.add(cap);
-  const plq=box(4.96,1.12,.06,std("#26272a",.5));plq.position.set(0,2.85,-.43);grp.add(plq);
+  const plq=box(4.96,1.12,.06,std(zone?zone.color:"#26272a",.5));plq.position.set(0,2.85,-.43);grp.add(plq);
   const sign=new THREE.Mesh(new THREE.PlaneGeometry(4.8,1.0),new THREE.MeshBasicMaterial({map:signTexture(p,i,t)}));sign.position.set(0,2.85,-.395);grp.add(sign);
-  const acc=box(4.96,.03,.065,std(t.trim,.35,.6));acc.position.set(0,2.29,-.43);grp.add(acc);
+  const acc=box(4.96,.03,.065,std(zone?"#ffffff":t.trim,.35,.6));acc.position.set(0,2.29,-.43);grp.add(acc);
   const plinth=box(4.9,.14,1.3,std(t.plinth,.4,.2));plinth.position.set(0,.07,.15);grp.add(plinth);
   addShadow(grp,6.6,2.6,0,0,.42,false);
   const edge=box(4.92,.02,.02,trim);edge.position.set(0,.14,.8);grp.add(edge);
@@ -1005,6 +1009,7 @@ function buildWorld(key){
     ban.position.set(0,3.9,-3);scene.add(ban);
     [-1,1].forEach(s=>{const wire=box(.01,CEIL_H-.08-3.9-hh/2,.01,std("#888",.3,.8));wire.position.set(s*w*.42,(CEIL_H-.08+3.9+hh/2)/2,-3);scene.add(wire);});}
   const clk=[];h.booths.slice(0,8).forEach((p,i)=>makeBooth(scene,clk,p,i,t,hallIdx));
+  addZones(scene,h);
   const guide=makeGuide(scene,t);
   return{scene,clk,floor,guide};
 }
@@ -1061,6 +1066,35 @@ function animateGuide(dt){
   u.chev.forEach((c,i)=>{c.material.opacity=u.fade*(.25+.75*Math.max(0,Math.sin(tm*3.2-i*.9)));});
   const p=(tm*.9)%1;u.pulse.scale.setScalar(1+p*1.6);u.pulse.material.opacity=u.fade*.8*(1-p);
   u.ring.scale.setScalar(1+Math.sin(tm*3)*.05);
+}
+
+
+/* ---------------- 브랜드관(대형가전 좌 LG · 우 삼성) ---------------- */
+function boothZone(k,i){const zs=HALLS[k]&&HALLS[k].zones;if(!zs)return null;const side=i<4?-1:1;return zs.find(z=>z.side===side)||null;}
+function zoneBannerTexture(z){
+  const c=document.createElement("canvas");c.width=1400;c.height=360;const g=c.getContext("2d");
+  g.fillStyle=z.color;g.fillRect(0,0,1400,360);
+  g.fillStyle="rgba(255,255,255,.9)";g.fillRect(0,0,1400,10);g.fillRect(0,350,1400,10);
+  g.textAlign="center";g.fillStyle="#ffffff";fitFont(g,z.name,900,150,KR,1300);g.fillText(z.name,700,205);
+  g.font=`700 44px ${KR}`;g.globalAlpha=.9;g.fillText(z.en,700,295);g.globalAlpha=1;
+  return canvasTex(c);
+}
+function zoneStripTexture(z){
+  const c=document.createElement("canvas");c.width=2048;c.height=128;const g=c.getContext("2d");
+  g.fillStyle=z.color;g.fillRect(0,0,2048,128);g.fillStyle="#ffffff";g.font=`800 64px ${KR}`;g.textBaseline="middle";
+  g.fillText(z.name,60,66);g.globalAlpha=.85;g.font=`700 40px ${KR}`;g.fillText(z.en,60+g.measureText(z.name).width+620,68);g.globalAlpha=1;
+  return canvasTex(c,6,1);
+}
+function addZones(scene,h){
+  (h.zones||[]).forEach(z=>{
+    // 입구 쪽 천장에 매단 브랜드관 간판
+    const w=3.8,hh=w*360/1400;const ban=new THREE.Mesh(new THREE.PlaneGeometry(w,hh),new THREE.MeshBasicMaterial({map:zoneBannerTexture(z),side:THREE.DoubleSide}));
+    ban.position.set(z.side*4.1,4.15,-3.2);scene.add(ban);
+    [-1,1].forEach(s=>{const wire=box(.012,CEIL_H-.08-4.15-hh/2,.012,std("#999",.3,.8));wire.position.set(z.side*4.1+s*w*.42,(CEIL_H-.08+4.15+hh/2)/2,-3.2);scene.add(wire);});
+    // 벽 위쪽을 따라 브랜드 색 띠
+    const L=33,strip=new THREE.Mesh(new THREE.PlaneGeometry(L,.42),new THREE.MeshBasicMaterial({map:zoneStripTexture(z)}));
+    strip.position.set(z.side*(HALL_W/2-.03),4.35,-3.5-L/2);strip.rotation.y=z.side<0?Math.PI/2:-Math.PI/2;scene.add(strip);
+  });
 }
 
 function ensureRenderer(){
@@ -1161,6 +1195,7 @@ function openBooth(i){
   $("sItems").innerHTML=p.items.map(t=>`<div><dt>${t.label}</dt><dd>${t.spec}</dd></div>`).join("");
   $("sPerks").innerHTML=p.perks.map(x=>`<span>${x}</span>`).join("");
   $("sTalk").href=p.talk||h.talk||TALK;
+  const zn=boothZone(hallKey,i);$("sheet").style.setProperty("--accent",zn?zn.color:"");$("sEye").textContent=zn?`${zn.name} · 부스 ${i+1}/${total(hallKey)}`:$("sEye").textContent;
   $("sCopyText").hidden=true;$("sheet").classList.remove("closed");$("list").hidden=true;hideHint();
 }
 function closeSheet(){$("sheet").classList.add("closed");}
@@ -1174,8 +1209,9 @@ function copyMsg(){
 function renderList(){
   const h=HALLS[hallKey],n=total(hallKey),v=visited[hallKey];
   const row=i=>{const p=h.booths[i];return `<button type="button" class="item ${v.has(i)?"seen":""}" data-i="${i}"><span class="no">${String(i+1).padStart(2,"0")}</span><span class="nm">${p.brand} ${p.name}</span><span class="pr">${won(p.price)}</span></button>`;};
-  let s=`<div class="side">왼쪽 부스</div>`;for(let i=0;i<Math.min(4,n);i++)s+=row(i);
-  if(n>4){s+=`<div class="side">오른쪽 부스</div>`;for(let i=4;i<n;i++)s+=row(i);}
+  const zs=h.zones||[];const zl=zs.find(z=>z.side<0),zr=zs.find(z=>z.side>0);
+  let s=`<div class="side"${zl?` style="color:${zl.color}"`:""}>${zl?zl.name:"왼쪽 부스"}</div>`;for(let i=0;i<Math.min(4,n);i++)s+=row(i);
+  if(n>4){s+=`<div class="side"${zr?` style="color:${zr.color}"`:""}>${zr?zr.name:"오른쪽 부스"}</div>`;for(let i=4;i<n;i++)s+=row(i);}
   $("listBody").innerHTML=s;
   $("listBody").querySelectorAll("button.item").forEach(b=>b.onclick=()=>openBooth(+b.dataset.i));
   $("hallJump").innerHTML=HALL_KEYS.filter(k=>k!==hallKey).map(k=>`<button class="btn" type="button" data-hall="${k}">${HALLS[k].name}으로 →</button>`).join("");
