@@ -6,6 +6,7 @@
 - `index.html` — 페이지 전체(부스·링크 데이터는 파일 위쪽 `LANDING`, `HALLS`, `TALK` 부분에서 수정)
 - `store.jpg` — 첫 화면 매장 전경
 - `motopia.jpg` — 모토피아 로고
+- `NEW_STORE_GUIDE.md` — 다른 매장 체험관을 만들 때 쓰는 복제 가이드
 
 ## GitHub Pages로 배포
 1. GitHub에서 새 저장소 만들기 (예: `ansan-3d-showroom`, Public)
