@@ -1124,7 +1124,10 @@ function makeNav(scene,t){
   const arrows={},hits=[];
   defs.forEach(([k,ang,x,z])=>{
     const holder=new THREE.Group();holder.position.set(x,.03,z);holder.rotation.y=ang;compass.add(holder);
-    const edge=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:.95,depthWrite:false}));
+    /* 흰 테두리 + 아래에 옅은 그림자 테두리(흰 대리석 위에서도 보이게) */
+    const shade=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:"#000000",transparent:true,opacity:.28,depthWrite:false}));
+    shade.rotation.x=-Math.PI/2;shade.position.set(.025,.002,.03);shade.scale.set(1.04,1.04,1);shade.renderOrder=4;holder.add(shade);
+    const edge=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:"#ffffff",transparent:true,opacity:1,depthWrite:false}));
     edge.rotation.x=-Math.PI/2;edge.position.y=.004;edge.renderOrder=5;holder.add(edge);
     const fill=new THREE.Mesh(fillGeo,new THREE.MeshBasicMaterial({color:t.accent,transparent:true,opacity:0,depthWrite:false}));
     fill.rotation.x=-Math.PI/2;fill.renderOrder=4;holder.add(fill);
@@ -1142,7 +1145,7 @@ function animateNav(dt){
   const held={w:keys.w||keys.arrowup,s:keys.s||keys.arrowdown,a:keys.a,d:keys.d};
   for(const k in n.arrows){const ar=n.arrows[k];ar.flash=Math.max(0,ar.flash-dt);
     const on=held[k]||ar.flash>0;
-    ar.fill.material.opacity=on?.35:0;ar.edge.material.color.set(on?"#1d1a17":world.accent);
+    ar.fill.material.opacity=on?.35:0;ar.edge.material.color.set(on?world.accent:"#ffffff");
     const pulse=(!n.used&&!reduce)?1+Math.sin(tm*4)*.07:1;ar.holder.scale.setScalar((on?1.15:1)*pulse);}
   if(moveTarget){n.target.visible=true;n.target.position.set(moveTarget.x,.03,moveTarget.z);n.tm.opacity=.85;}
   else if(n.target.visible){n.tm.opacity-=dt*3;if(n.tm.opacity<=0)n.target.visible=false;}
