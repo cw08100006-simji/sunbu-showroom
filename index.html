@@ -995,14 +995,14 @@ function makeGuide(scene,t){
   const basic=o=>{const m=new THREE.MeshBasicMaterial(Object.assign({transparent:true,depthWrite:false},o));mats.push(m);return m;};
   const flat=(geo,mat,z,y=.02)=>{const m=new THREE.Mesh(geo,mat);m.rotation.x=-Math.PI/2;m.position.set(0,y,z);m.renderOrder=3;grp.add(m);return m;};
   // 안내 문구: 바닥에 누운 스티커 (비스듬히 보이므로 세로로 늘려 그림)
-  const label=flat(new THREE.PlaneGeometry(2.7,1.37),basic({map:guideTexture(t.accent)}),.15);label.scale.y=1.9;
+  const label=flat(new THREE.PlaneGeometry(2.2,1.12),basic({map:guideTexture(t.accent)}),-.9);label.scale.y=2.1;
   // 화살표 3개
   const chevShape=new THREE.Shape();chevShape.moveTo(-.34,-.12);chevShape.lineTo(0,.2);chevShape.lineTo(.34,-.12);chevShape.lineTo(.34,-.26);chevShape.lineTo(0,.06);chevShape.lineTo(-.34,-.26);chevShape.closePath();
-  const chev=[-.95,-1.45,-1.95].map(z=>{const m=flat(new THREE.ShapeGeometry(chevShape),basic({color:"#ffffff",opacity:.9}),z);m.scale.set(1,1.8,1);return m;});
+  const chev=[-2.35,-2.85,-3.35].map(z=>{const m=flat(new THREE.ShapeGeometry(chevShape),basic({color:"#ffffff",opacity:.9}),z);m.scale.set(1.1,2.2,1);return m;});
   // 목표 지점: 링 + 퍼지는 파동 + 가운데 점
-  const ring=flat(new THREE.RingGeometry(.42,.54,48),basic({color:"#ffffff",opacity:.95}),-2.7,.022);
-  const pulse=flat(new THREE.RingGeometry(.46,.52,48),basic({color:t.accent,opacity:.8}),-2.7,.021);
-  const dot=flat(new THREE.CircleGeometry(.16,32),basic({color:t.accent,opacity:.95}),-2.7,.023);
+  const ring=flat(new THREE.RingGeometry(.42,.54,48),basic({color:"#ffffff",opacity:.95}),-4.3,.022);
+  const pulse=flat(new THREE.RingGeometry(.46,.52,48),basic({color:t.accent,opacity:.8}),-4.3,.021);
+  const dot=flat(new THREE.CircleGeometry(.16,32),basic({color:t.accent,opacity:.95}),-4.3,.023);
   scene.add(grp);
   grp.userData={mats,chev,ring,pulse,dot,fade:1,hiding:false,base:mats.map(m=>m.opacity)};
   return grp;
