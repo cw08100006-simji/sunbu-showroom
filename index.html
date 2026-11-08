@@ -326,6 +326,24 @@ a.btn.main{color:var(--ink)}
   .card .ft{margin:0}
   .card .ft b{font-size:12.5px;color:#ecd29c}
 }
+
+#paste{position:fixed;inset:0;z-index:15;display:grid;place-items:center;background:rgba(12,10,14,.55);opacity:0;transition:opacity .2s;
+  padding:16px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px));
+  --panel:#fbf9f5;--line:#e6dfd4;--paper:#1d1a17;--mute:#6f675f;--soft:#f1ece4;color:var(--paper)}
+#paste.on{opacity:1}
+.paste-card{width:min(400px,100%);max-height:100%;overflow:auto;background:var(--panel);border-radius:20px;padding:24px 20px 18px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.ok-badge{width:52px;height:52px;margin:0 auto;border-radius:50%;background:#03c75a;color:#fff;display:grid;place-items:center;font-size:28px;font-weight:900}
+.paste-title{display:block;margin-top:12px;font-size:20px;font-weight:900}
+.steps{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;text-align:left}
+.steps li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:14.5px;font-weight:700}
+.steps li span{flex:none;width:24px;height:24px;border-radius:50%;background:var(--paper);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:900}
+.steps em{font-style:normal;color:#03a24a;font-weight:900}
+#pasteMsg{text-align:left;margin-top:12px;max-height:140px;overflow:auto;user-select:all;-webkit-user-select:all}
+.paste-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.paste-btns .btn{display:block;padding:15px 16px;font-size:16px;font-weight:900;text-align:center;border-radius:14px}
+.btn.sms{background:var(--paper);border-color:var(--paper);color:#fff}
+.paste-close{border:0;background:none;padding:8px;font-size:14px;font-weight:700;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){#paste{transition:none}}
 </style>
 </head>
 <body>
@@ -382,7 +400,7 @@ a.btn.main{color:var(--ink)}
       <div><div class="sec" style="margin-bottom:8px">함께 드리는 혜택</div><div class="perks" id="sPerks"></div></div>
       <div class="row"><a class="btn main" id="sBook" href="#" target="_blank" rel="noopener" hidden>네이버로 방문 예약</a></div>
       <div class="row"><a class="btn talk" id="sTalk" href="#" target="_blank" rel="noopener">톡톡으로 이 패키지 상담</a></div>
-      <p class="note" style="margin-top:-8px">누르면 상담 문구가 복사돼요. 톡톡 창에 붙여넣기만 하면 돼요.</p>
+      <p class="note" style="margin-top:-8px">누르면 상담 문구가 복사되고 붙여넣는 방법을 알려드려요.</p>
       <div class="row">
         <button class="btn" id="sPrev" type="button">← 이전 부스</button>
         <button class="btn" id="sNext" type="button">다음 부스 →</button>
@@ -499,6 +517,24 @@ a.btn.main{color:var(--ink)}
     <div class="st-foot">
       <a class="btn talk" id="fGo" href="#" target="_blank" rel="noopener">네이버 톡톡으로 바로 상담</a>
       <details class="pv"><summary>톡톡에 붙여넣을 문구 보기</summary><pre id="fMsg" class="msgbox"></pre></details>
+    </div>
+  </div>
+</div>
+
+<div id="paste" hidden>
+  <div class="paste-card" role="dialog" aria-modal="true" aria-labelledby="pasteTitle">
+    <div class="ok-badge" aria-hidden="true">✓</div>
+    <b class="paste-title" id="pasteTitle">상담 문구를 복사했어요</b>
+    <ol class="steps">
+      <li><span>1</span>아래 초록 버튼으로 톡톡을 열어요</li>
+      <li><span>2</span><em id="pasteHow">입력창을 길게 눌러 붙여넣기</em></li>
+      <li><span>3</span>보내기만 누르면 끝이에요</li>
+    </ol>
+    <pre id="pasteMsg" class="msgbox"></pre>
+    <div class="paste-btns">
+      <a class="btn talk" id="pasteGo" href="#" target="_blank" rel="noopener">톡톡 열고 붙여넣기</a>
+      <a class="btn sms" id="pasteSms" href="#" hidden>문자로 바로 보내기</a>
+      <button class="paste-close" id="pasteClose" type="button">닫기</button>
     </div>
   </div>
 </div>
@@ -1149,7 +1185,7 @@ $("sClose").onclick=closeSheet;
 $("sPrev").onclick=()=>openBooth((current+total(hallKey)-1)%total(hallKey));
 $("sNext").onclick=()=>openBooth((current+1)%total(hallKey));
 $("sTalk").href=TALK;$("topTalk").href=TALK;
-$("sTalk").addEventListener("click",copyMsg);
+$("sTalk").addEventListener("click",e=>{const h=HALLS[hallKey],p=h.booths[current];talkFlow(e,`[${STORE} · ${h.name}] ${p.brand} ${p.name} (${p.monthly?"월 ":""}${won(p.price)}원) 상담 받고 싶어요.`,$("sTalk").href);});
 $("openList").onclick=()=>{renderList();$("list").hidden=false;};
 $("list").addEventListener("click",e=>{if(e.target.id==="list")$("list").hidden=true;});
 $("toLanding").onclick=()=>{history.replaceState(null,"",location.pathname+location.search);showLanding();};
@@ -1258,7 +1294,7 @@ function copyText(text){
 }
 ["qSub","pSel","cMonth","bModel","hNow"].forEach(id=>$(id).onchange=refreshQ);
 ["pMore","sMemo","cArea","bMemo","uModel","uMemo","hMemo"].forEach(id=>$(id).oninput=refreshQ);
-$("qGo").addEventListener("click",()=>copyText($("qGo").dataset.msg||""));
+$("qGo").addEventListener("click",e=>talkFlow(e,$("qGo").dataset.msg||"",$("qGo").href));
 $("stClose").onclick=closePanel;
 $("stBack").onclick=()=>{closePanel();showAsk();toggleMenu();};
 $("askBtn").onclick=toggleMenu;
@@ -1299,10 +1335,34 @@ function refreshFast(){
 }
 ["fMonth","fModel","fHNow"].forEach(id=>$(id).onchange=refreshFast);
 ["fArea","fItem","fUModel","fUState"].forEach(id=>$(id).oninput=refreshFast);
-$("fGo").addEventListener("click",()=>copyText($("fGo").dataset.msg||""));
+$("fGo").addEventListener("click",e=>talkFlow(e,$("fGo").dataset.msg||"",$("fGo").href));
 $("fastClose").onclick=closeFast;
 $("fast").addEventListener("click",e=>{if(e.target.id==="fast")closeFast();});
-addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("fast").hidden)closeFast();});
+addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!$("paste").hidden){closePaste();return;}if(!$("fast").hidden)closeFast();});
+
+
+/* ---------------- 톡톡 연결 전 붙여넣기 안내 ---------------- */
+/* 문자 상담 번호: 숫자만 넣으면 안내 창에 "문자로 바로 보내기" 버튼이 나타나요 (예: "0310000000") */
+const SMS_NUMBER = "";
+const IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+function talkFlow(e,msg,link){
+  e.preventDefault();
+  let ok=false;
+  try{navigator.clipboard.writeText(msg).then(()=>{},()=>failCopy());ok=true;}catch(err){ok=false;}
+  $("pasteTitle").textContent="상담 문구를 복사했어요";
+  $("pasteHow").textContent=COARSE?"입력창을 길게 눌러 붙여넣기":"입력창에 Ctrl + V 로 붙여넣기";
+  $("pasteMsg").textContent=msg;$("pasteGo").href=link||TALK;$("pasteGo").dataset.msg=msg;
+  const num=SMS_NUMBER.replace(/[^0-9]/g,"");
+  if(num){$("pasteSms").href=`sms:${num}${IOS?"&":"?"}body=${encodeURIComponent(msg)}`;$("pasteSms").hidden=false;}else $("pasteSms").hidden=true;
+  if(!ok)failCopy();
+  $("paste").hidden=false;requestAnimationFrame(()=>$("paste").classList.add("on"));
+}
+function failCopy(){$("pasteTitle").textContent="아래 문구를 길게 눌러 복사해 주세요";}
+function closePaste(){$("paste").classList.remove("on");setTimeout(()=>{if(!$("paste").classList.contains("on"))$("paste").hidden=true;},reduce?0:200);}
+$("pasteGo").addEventListener("click",()=>{try{navigator.clipboard.writeText($("pasteGo").dataset.msg||"");}catch(e){}setTimeout(closePaste,600);});
+$("pasteSms").addEventListener("click",()=>setTimeout(closePaste,600));
+$("pasteClose").onclick=closePaste;
+$("paste").addEventListener("click",e=>{if(e.target.id==="paste")closePaste();});
 
 /* ---------------- 이용자 수 ---------------- */
 let pendingOpen=null;
