@@ -346,18 +346,27 @@ a.btn.main{color:var(--ink)}
 @media (prefers-reduced-motion:reduce){#paste{transition:none}}
 
 .s-logo{display:block;height:24px;width:auto;max-width:160px;margin-bottom:8px}
-.z-logo{height:16px;width:auto}
+.z-logo{height:20px;width:auto}
 
-.dpad{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:4;
-  display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(2,54px);gap:6px;
-  grid-template-areas:". up ." "lf dn rt";touch-action:none;user-select:none;-webkit-user-select:none}
-.dpad .up{grid-area:up}.dpad .lf{grid-area:lf}.dpad .dn{grid-area:dn}.dpad .rt{grid-area:rt}
-.dpad button{display:grid;place-items:center;border-radius:16px;border:1px solid var(--glassline);background:var(--glass);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--paper);box-shadow:0 6px 18px rgba(40,30,20,.14);
-  -webkit-touch-callout:none;transition:background .12s,color .12s,transform .12s}
-.dpad button.on{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(.94)}
-.hint{bottom:calc(env(safe-area-inset-bottom,0px) + 136px)}
-@media (max-width:720px){.dpad{grid-template-columns:repeat(3,58px);grid-template-rows:repeat(2,58px)}}
+.joy{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);width:168px;height:168px;margin-left:-84px;z-index:4;pointer-events:none}
+.joy-arrows span{position:absolute;width:44px;height:44px;left:62px;top:62px;border-radius:50%;display:grid;place-items:center;
+  background:var(--glass);border:1px solid var(--glassline);color:var(--paper);opacity:0;transform:scale(.5);
+  transition:opacity .18s,transform .18s,background .12s,color .12s;box-shadow:0 6px 16px rgba(40,30,20,.14)}
+.joy.active .joy-arrows span{opacity:1}
+.joy.active .joy-arrows [data-d="w"]{transform:translateY(-62px)}
+.joy.active .joy-arrows [data-d="s"]{transform:translateY(62px)}
+.joy.active .joy-arrows [data-d="a"]{transform:translateX(-62px)}
+.joy.active .joy-arrows [data-d="d"]{transform:translateX(62px)}
+.joy-arrows span.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.joy-knob{position:absolute;left:52px;top:52px;width:64px;height:64px;border-radius:50%;pointer-events:auto;touch-action:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1.5px solid var(--glassline);
+  background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--paper);
+  box-shadow:0 8px 22px rgba(40,30,20,.18);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:background .15s}
+.joy-knob i{width:18px;height:18px;background:
+  linear-gradient(currentColor,currentColor) center/2px 100% no-repeat,linear-gradient(currentColor,currentColor) center/100% 2px no-repeat;opacity:.7}
+.joy-knob b{font-size:11.5px;font-weight:800}
+.joy.active .joy-knob{background:var(--paper);color:#fff;transition:none}
+.hint{bottom:calc(env(safe-area-inset-bottom,0px) + 104px)}
 </style>
 </head>
 <body>
@@ -397,11 +406,9 @@ a.btn.main{color:var(--ink)}
       <button class="btn" id="toLanding" type="button">다른 관으로</button>
     </div>
   </div>
-  <div class="dpad" id="dpad" role="group" aria-label="이동 방향">
-    <button type="button" class="up" data-k="w" aria-label="앞으로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(0deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
-    <button type="button" class="lf" data-k="a" aria-label="왼쪽으로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(-90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
-    <button type="button" class="dn" data-k="s" aria-label="뒤로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(180deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
-    <button type="button" class="rt" data-k="d" aria-label="오른쪽으로"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:rotate(90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></button>
+  <div class="joy" id="joy">
+    <div class="joy-arrows" aria-hidden="true"><span data-d="w"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(0deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span><span data-d="d"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span><span data-d="s"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(180deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span><span data-d="a"><svg viewBox="0 0 24 24" width="22" height="22" style="transform:rotate(-90deg)"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg></span></div>
+    <button class="joy-knob" id="joyKnob" type="button" aria-label="누른 채로 밀어서 이동"><i aria-hidden="true"></i><b>이동</b></button>
   </div>
   <div class="hint chip" id="hint">끌어서 둘러보기 · 바닥 누르면 이동 · W A S D · 부스 누르면 구성과 금액</div>
 
@@ -1094,25 +1101,25 @@ function animateGuide(dt){
 /* ---------------- 브랜드관(대형가전 좌 LG · 우 삼성) ---------------- */
 function boothZone(k,i){const zs=HALLS[k]&&HALLS[k].zones;if(!zs)return null;const side=i<4?-1:1;return zs.find(z=>z.side===side)||null;}
 function zoneBannerTexture(z){
-  const c=document.createElement("canvas");c.width=1400;c.height=520;const g=c.getContext("2d");
-  g.fillStyle="#ffffff";g.fillRect(0,0,1400,320);
-  if(z.logoImg){const lh=190,lw=Math.min(1200,lh*z.logoImg.width/z.logoImg.height),rh=lw*z.logoImg.height/z.logoImg.width;
-    g.drawImage(z.logoImg,700-lw/2,160-rh/2,lw,rh);}
-  else{g.textAlign="center";g.fillStyle=z.color;g.font=`900 130px ${KR}`;g.fillText(z.en,700,200);g.textAlign="left";}
-  g.fillStyle=z.color;g.fillRect(0,320,1400,200);
-  g.textAlign="center";g.fillStyle="#ffffff";fitFont(g,z.name,900,104,KR,1300);g.fillText(z.name,700,455);
+  /* 흰 판 + 브랜드 로고만 (브랜드관 문구 없음), 아래 얇은 브랜드 색 선 */
+  const c=document.createElement("canvas");c.width=1400;c.height=400;const g=c.getContext("2d");
+  g.fillStyle="#ffffff";g.fillRect(0,0,1400,400);g.fillStyle=z.color;g.fillRect(0,376,1400,24);
+  if(z.logoImg){const lh=220,lw=Math.min(1240,lh*z.logoImg.width/z.logoImg.height),rh=lw*z.logoImg.height/z.logoImg.width;
+    g.drawImage(z.logoImg,700-lw/2,188-rh/2,lw,rh);}
+  else{g.textAlign="center";g.fillStyle=z.color;fitFont(g,z.en,900,140,KR,1240);g.fillText(z.en,700,235);}
   return canvasTex(c);
 }
 function zoneStripTexture(z){
+  /* 벽 위 흰 띠 + 로고 반복, 위아래 브랜드 색 선 */
   const c=document.createElement("canvas");c.width=2048;c.height=128;const g=c.getContext("2d");
-  g.fillStyle=z.color;g.fillRect(0,0,2048,128);g.fillStyle="#ffffff";g.font=`800 64px ${KR}`;g.textBaseline="middle";
-  g.fillText(z.name,60,66);g.globalAlpha=.85;g.font=`700 40px ${KR}`;g.fillText(z.en,60+g.measureText(z.name).width+620,68);g.globalAlpha=1;
+  g.fillStyle="#ffffff";g.fillRect(0,0,2048,128);g.fillStyle=z.color;g.fillRect(0,0,2048,7);g.fillRect(0,121,2048,7);
+  if(z.logoImg){const lh=74,lw=lh*z.logoImg.width/z.logoImg.height;g.drawImage(z.logoImg,70,64-lh/2,lw,lh);}
   return canvasTex(c,6,1);
 }
 function addZones(scene,h){
   (h.zones||[]).forEach(z=>{
     // 입구 쪽 천장에 매단 브랜드관 간판
-    const w=3.8,hh=w*520/1400;const ban=new THREE.Mesh(new THREE.PlaneGeometry(w,hh),new THREE.MeshBasicMaterial({map:zoneBannerTexture(z),side:THREE.DoubleSide}));
+    const w=3.2,hh=w*400/1400;const ban=new THREE.Mesh(new THREE.PlaneGeometry(w,hh),new THREE.MeshBasicMaterial({map:zoneBannerTexture(z),side:THREE.DoubleSide}));
     ban.position.set(z.side*4.1,4.15,-3.2);scene.add(ban);
     [-1,1].forEach(s=>{const wire=box(.012,CEIL_H-.08-4.15-hh/2,.012,std("#999",.3,.8));wire.position.set(z.side*4.1+s*w*.42,(CEIL_H-.08+4.15+hh/2)/2,-3.2);scene.add(wire);});
     // 벽 위쪽을 따라 브랜드 색 띠
@@ -1135,9 +1142,10 @@ function makeNav(scene,t){
 function animateNav(dt){
   const n=world&&world.nav;if(!n)return;
   const v=new THREE.Vector3(pos.x-n.prev.x,0,pos.z-n.prev.z);n.prev.copy(pos);
-  const moving=v.length()>dt*.35;
+  const held=keys.w||keys.s||keys.a||keys.d||keys.arrowup||keys.arrowdown;
+  const moving=held&&v.length()>dt*.35;
   if(moving)n.dir.lerp(v.normalize(),.35).normalize();
-  n.a+=((moving?.9:0)-n.a)*Math.min(1,dt*(moving?10:5));
+  n.a=moving?Math.min(.9,n.a+dt*8):(held?n.a:0);
   n.am.opacity=n.a;n.arrow.visible=n.a>.02;
   if(n.arrow.visible){n.arrow.position.set(pos.x+n.dir.x*1.9,.035,pos.z+n.dir.z*1.9);n.arrow.rotation.y=Math.atan2(-n.dir.x,-n.dir.z);}
   // 바닥을 눌러 이동할 때는 도착 지점 링
@@ -1146,16 +1154,25 @@ function animateNav(dt){
   else if(n.target.visible){n.tm.opacity-=dt*3;if(n.tm.opacity<=0)n.target.visible=false;}
 }
 function bindDpad(){
-  const btns=document.querySelectorAll("#dpad button");
-  btns.forEach(b=>{const k=b.dataset.k;
-    const on=e=>{e.preventDefault();try{b.setPointerCapture(e.pointerId);}catch(_){}keys[k]=true;b.classList.add("on");hideHint();};
-    const off=()=>{keys[k]=false;b.classList.remove("on");};
-    b.addEventListener("pointerdown",on);["pointerup","pointercancel","lostpointercapture"].forEach(ev=>b.addEventListener(ev,off));
-    b.addEventListener("contextmenu",e=>e.preventDefault());});
-  // 키보드로 움직일 때도 버튼에 불이 들어오게
+  /* "이동" 버튼을 누른 채 미는 방향으로 이동. 누르는 동안에만 전후좌우 화살표가 보이고, 떼면 사라짐 */
+  const joy=$("joy"),knob=$("joyKnob"),R=40,DZ=12;let id=null,cx=0,cy=0;
+  const arrows={};joy.querySelectorAll(".joy-arrows span").forEach(a=>arrows[a.dataset.d]=a);
+  const set=(dx,dy)=>{const on={w:dy<-DZ,s:dy>DZ,a:dx<-DZ,d:dx>DZ};
+    for(const k in on){keys[k]=on[k];arrows[k].classList.toggle("on",on[k]);}};
+  const end=()=>{if(id===null)return;id=null;set(0,0);joy.classList.remove("active");knob.style.transform="";};
+  knob.addEventListener("pointerdown",e=>{e.preventDefault();id=e.pointerId;try{knob.setPointerCapture(id);}catch(_){}
+    const r=knob.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2;joy.classList.add("active");hideHint();set(0,0);});
+  knob.addEventListener("pointermove",e=>{if(e.pointerId!==id)return;let dx=e.clientX-cx,dy=e.clientY-cy;const l=Math.hypot(dx,dy);
+    if(l>R){dx*=R/l;dy*=R/l;}knob.style.transform=`translate(${dx}px,${dy}px)`;set(dx,dy);});
+  ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>knob.addEventListener(ev,end));
+  knob.addEventListener("contextmenu",e=>e.preventDefault());
+  // 키보드(W A S D · 방향키)로 움직일 때도 누르는 동안만 화살표 표시
   const map={w:"w",arrowup:"w",s:"s",arrowdown:"s",a:"a",d:"d"};
-  addEventListener("keydown",e=>{const k=map[e.key.toLowerCase()];if(k)document.querySelector(`#dpad [data-k="${k}"]`).classList.add("on");});
-  addEventListener("keyup",e=>{const k=map[e.key.toLowerCase()];if(k)document.querySelector(`#dpad [data-k="${k}"]`).classList.remove("on");});
+  const sync=()=>{if(id!==null)return;const any=["w","s","a","d"].some(k=>keys[k]||(k==="w"&&keys.arrowup)||(k==="s"&&keys.arrowdown));
+    joy.classList.toggle("active",any);for(const k in arrows)arrows[k].classList.toggle("on",!!(keys[k]||(k==="w"&&keys.arrowup)||(k==="s"&&keys.arrowdown)));};
+  addEventListener("keydown",e=>{if(map[e.key.toLowerCase()])setTimeout(sync,0);});
+  addEventListener("keyup",e=>{if(map[e.key.toLowerCase()])setTimeout(sync,0);});
+  addEventListener("blur",end);
 }
 
 function ensureRenderer(){
@@ -1194,7 +1211,7 @@ function enterHall(k){
     ["topBook","sBook"].forEach(id=>{const a=$(id);if(h.booking){a.href=h.booking;a.hidden=false;}else a.hidden=true;});
     pos.set(0,EYE,3);yaw=0;pitch=-.1;if(world.nav)world.nav.prev.copy(pos);moveTarget=yawTarget=pitchTarget=null;
     closeSheet();closePanel();$("list").hidden=true;
-    $("hint").textContent=COARSE?"화살표 버튼으로 전후좌우 이동 · 밀어서 둘러보기 · 부스를 터치하면 구성과 금액":"화살표 버튼·W A S D로 전후좌우 이동 · 드래그로 둘러보기 · 부스를 클릭하면 구성과 금액";
+    $("hint").textContent=COARSE?"아래 이동 버튼을 누른 채 밀면 전후좌우 이동 · 화면을 밀면 둘러보기":"이동 버튼을 누른 채 끌거나 W A S D로 전후좌우 이동 · 드래그로 둘러보기";
     hintOff=false;$("hint").classList.remove("off");
     $("loading").classList.add("done");
     $("hint").classList.add("off");showGuide(k);
@@ -1257,7 +1274,7 @@ function openBooth(i){
   $("sPerks").innerHTML=p.perks.map(x=>`<span>${x}</span>`).join("");
   $("sTalk").href=p.talk||h.talk||TALK;
   const zn=boothZone(hallKey,i);$("sheet").style.setProperty("--accent",zn?zn.color:"");
-  if(zn&&zn.logo){$("sLogo").src=zn.logo;$("sLogo").alt=zn.name;$("sLogo").hidden=false;}else $("sLogo").hidden=true;$("sEye").textContent=zn?`${zn.name} · 부스 ${i+1}/${total(hallKey)}`:$("sEye").textContent;
+  if(zn&&zn.logo){$("sLogo").src=zn.logo;$("sLogo").alt=zn.name;$("sLogo").hidden=false;}else $("sLogo").hidden=true;$("sEye").textContent=zn?`부스 ${i+1}/${total(hallKey)}`:$("sEye").textContent;
   $("sCopyText").hidden=true;$("sheet").classList.remove("closed");$("list").hidden=true;hideHint();
 }
 function closeSheet(){$("sheet").classList.add("closed");}
@@ -1272,8 +1289,8 @@ function renderList(){
   const h=HALLS[hallKey],n=total(hallKey),v=visited[hallKey];
   const row=i=>{const p=h.booths[i];return `<button type="button" class="item ${v.has(i)?"seen":""}" data-i="${i}"><span class="no">${String(i+1).padStart(2,"0")}</span><span class="nm">${p.brand} ${p.name}</span><span class="pr">${won(p.price)}</span></button>`;};
   const zs=h.zones||[];const zl=zs.find(z=>z.side<0),zr=zs.find(z=>z.side>0);
-  let s=`<div class="side"${zl?` style="color:${zl.color}"`:""}>${zl?(zl.logo?`<img class="z-logo" src="${zl.logo}" alt="">`:"")+zl.name:"왼쪽 부스"}</div>`;for(let i=0;i<Math.min(4,n);i++)s+=row(i);
-  if(n>4){s+=`<div class="side"${zr?` style="color:${zr.color}"`:""}>${zr?(zr.logo?`<img class="z-logo" src="${zr.logo}" alt="">`:"")+zr.name:"오른쪽 부스"}</div>`;for(let i=4;i<n;i++)s+=row(i);}
+  let s=`<div class="side"${zl?` style="color:${zl.color}"`:""}>${zl?(zl.logo?`<img class="z-logo" src="${zl.logo}" alt="${zl.name}">`:zl.name):"왼쪽 부스"}</div>`;for(let i=0;i<Math.min(4,n);i++)s+=row(i);
+  if(n>4){s+=`<div class="side"${zr?` style="color:${zr.color}"`:""}>${zr?(zr.logo?`<img class="z-logo" src="${zr.logo}" alt="${zr.name}">`:zr.name):"오른쪽 부스"}</div>`;for(let i=4;i<n;i++)s+=row(i);}
   $("listBody").innerHTML=s;
   $("listBody").querySelectorAll("button.item").forEach(b=>b.onclick=()=>openBooth(+b.dataset.i));
   $("hallJump").innerHTML=HALL_KEYS.filter(k=>k!==hallKey).map(k=>`<button class="btn" type="button" data-hall="${k}">${HALLS[k].name}으로 →</button>`).join("");
