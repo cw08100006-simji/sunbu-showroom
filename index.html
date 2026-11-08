@@ -166,7 +166,7 @@ a.btn.main{color:var(--ink)}
   padding:calc(env(safe-area-inset-top,0px) + 70px) max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px))}
 #list .box{width:min(520px,100%);max-height:100%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
 #list h3{margin:0 0 4px;font-size:17px;font-weight:900}
-#list .side{margin:14px 0 6px;font-size:11.5px;color:var(--gold);letter-spacing:.12em;font-weight:700}
+#list .side{display:flex;align-items:center;gap:8px;margin:14px 0 6px;font-size:11.5px;color:var(--gold);letter-spacing:.12em;font-weight:700}
 #list button.item{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;
   padding:11px 10px;border:0;border-top:1px solid var(--line);background:transparent;font-size:14px}
 #list button.item:hover{background:var(--soft)}
@@ -344,6 +344,9 @@ a.btn.main{color:var(--ink)}
 .btn.sms{background:var(--paper);border-color:var(--paper);color:#fff}
 .paste-close{border:0;background:none;padding:8px;font-size:14px;font-weight:700;color:var(--mute)}
 @media (prefers-reduced-motion:reduce){#paste{transition:none}}
+
+.s-logo{display:block;height:24px;width:auto;max-width:160px;margin-bottom:8px}
+.z-logo{height:16px;width:auto}
 </style>
 </head>
 <body>
@@ -388,6 +391,7 @@ a.btn.main{color:var(--ink)}
   <aside id="sheet" class="closed" aria-live="polite">
     <div class="sh-head">
       <div style="min-width:0">
+        <img class="s-logo" id="sLogo" alt="" hidden>
         <div class="eyebrow" id="sEye"></div>
         <h2 id="sName"></h2>
         <div class="tag" id="sTag"></div>
@@ -574,7 +578,7 @@ const HALLS = {
     endLine:"다 있다, 젤 싸다",
     theme:{trim:"#b8955a",sign:{gold:"#e0c286",accent:"#ff5252"},accent:"#e0322f",uiGold:"#9a7a46"},
     /* 브랜드관: 왼쪽(부스 1~4) LG전자 · 오른쪽(부스 5~8) 삼성전자 */
-    zones:[{side:-1,name:"LG전자 브랜드관",en:"LG ELECTRONICS",color:"#A50034"},{side:1,name:"삼성전자 브랜드관",en:"SAMSUNG ELECTRONICS",color:"#1428A0"}],
+    zones:[{side:-1,name:"LG전자 브랜드관",en:"LG ELECTRONICS",color:"#A50034",logo:"lg.png"},{side:1,name:"삼성전자 브랜드관",en:"SAMSUNG ELECTRONICS",color:"#1428A0",logo:"samsung.png"}],
     booths:[
       {brand:"LG",name:"OLED 77형 거실 풀세트",tagline:"큰 화면에 사운드바와 스탠드 에어컨까지, 거실을 한 번에 바꾸는 구성",price:6490000,list:7980000,
         items:[{type:"tv",inch:77,label:"TV",spec:"OLED 77형"},{type:"sound",label:"사운드바",spec:"3.1.2채널"},{type:"aircon",label:"에어컨",spec:"스탠드형 2in1"}],
@@ -1072,11 +1076,13 @@ function animateGuide(dt){
 /* ---------------- 브랜드관(대형가전 좌 LG · 우 삼성) ---------------- */
 function boothZone(k,i){const zs=HALLS[k]&&HALLS[k].zones;if(!zs)return null;const side=i<4?-1:1;return zs.find(z=>z.side===side)||null;}
 function zoneBannerTexture(z){
-  const c=document.createElement("canvas");c.width=1400;c.height=360;const g=c.getContext("2d");
-  g.fillStyle=z.color;g.fillRect(0,0,1400,360);
-  g.fillStyle="rgba(255,255,255,.9)";g.fillRect(0,0,1400,10);g.fillRect(0,350,1400,10);
-  g.textAlign="center";g.fillStyle="#ffffff";fitFont(g,z.name,900,150,KR,1300);g.fillText(z.name,700,205);
-  g.font=`700 44px ${KR}`;g.globalAlpha=.9;g.fillText(z.en,700,295);g.globalAlpha=1;
+  const c=document.createElement("canvas");c.width=1400;c.height=520;const g=c.getContext("2d");
+  g.fillStyle="#ffffff";g.fillRect(0,0,1400,320);
+  if(z.logoImg){const lh=190,lw=Math.min(1200,lh*z.logoImg.width/z.logoImg.height),rh=lw*z.logoImg.height/z.logoImg.width;
+    g.drawImage(z.logoImg,700-lw/2,160-rh/2,lw,rh);}
+  else{g.textAlign="center";g.fillStyle=z.color;g.font=`900 130px ${KR}`;g.fillText(z.en,700,200);g.textAlign="left";}
+  g.fillStyle=z.color;g.fillRect(0,320,1400,200);
+  g.textAlign="center";g.fillStyle="#ffffff";fitFont(g,z.name,900,104,KR,1300);g.fillText(z.name,700,455);
   return canvasTex(c);
 }
 function zoneStripTexture(z){
@@ -1088,7 +1094,7 @@ function zoneStripTexture(z){
 function addZones(scene,h){
   (h.zones||[]).forEach(z=>{
     // 입구 쪽 천장에 매단 브랜드관 간판
-    const w=3.8,hh=w*360/1400;const ban=new THREE.Mesh(new THREE.PlaneGeometry(w,hh),new THREE.MeshBasicMaterial({map:zoneBannerTexture(z),side:THREE.DoubleSide}));
+    const w=3.8,hh=w*520/1400;const ban=new THREE.Mesh(new THREE.PlaneGeometry(w,hh),new THREE.MeshBasicMaterial({map:zoneBannerTexture(z),side:THREE.DoubleSide}));
     ban.position.set(z.side*4.1,4.15,-3.2);scene.add(ban);
     [-1,1].forEach(s=>{const wire=box(.012,CEIL_H-.08-4.15-hh/2,.012,std("#999",.3,.8));wire.position.set(z.side*4.1+s*w*.42,(CEIL_H-.08+4.15+hh/2)/2,-3.2);scene.add(wire);});
     // 벽 위쪽을 따라 브랜드 색 띠
@@ -1195,7 +1201,8 @@ function openBooth(i){
   $("sItems").innerHTML=p.items.map(t=>`<div><dt>${t.label}</dt><dd>${t.spec}</dd></div>`).join("");
   $("sPerks").innerHTML=p.perks.map(x=>`<span>${x}</span>`).join("");
   $("sTalk").href=p.talk||h.talk||TALK;
-  const zn=boothZone(hallKey,i);$("sheet").style.setProperty("--accent",zn?zn.color:"");$("sEye").textContent=zn?`${zn.name} · 부스 ${i+1}/${total(hallKey)}`:$("sEye").textContent;
+  const zn=boothZone(hallKey,i);$("sheet").style.setProperty("--accent",zn?zn.color:"");
+  if(zn&&zn.logo){$("sLogo").src=zn.logo;$("sLogo").alt=zn.name;$("sLogo").hidden=false;}else $("sLogo").hidden=true;$("sEye").textContent=zn?`${zn.name} · 부스 ${i+1}/${total(hallKey)}`:$("sEye").textContent;
   $("sCopyText").hidden=true;$("sheet").classList.remove("closed");$("list").hidden=true;hideHint();
 }
 function closeSheet(){$("sheet").classList.add("closed");}
@@ -1210,8 +1217,8 @@ function renderList(){
   const h=HALLS[hallKey],n=total(hallKey),v=visited[hallKey];
   const row=i=>{const p=h.booths[i];return `<button type="button" class="item ${v.has(i)?"seen":""}" data-i="${i}"><span class="no">${String(i+1).padStart(2,"0")}</span><span class="nm">${p.brand} ${p.name}</span><span class="pr">${won(p.price)}</span></button>`;};
   const zs=h.zones||[];const zl=zs.find(z=>z.side<0),zr=zs.find(z=>z.side>0);
-  let s=`<div class="side"${zl?` style="color:${zl.color}"`:""}>${zl?zl.name:"왼쪽 부스"}</div>`;for(let i=0;i<Math.min(4,n);i++)s+=row(i);
-  if(n>4){s+=`<div class="side"${zr?` style="color:${zr.color}"`:""}>${zr?zr.name:"오른쪽 부스"}</div>`;for(let i=4;i<n;i++)s+=row(i);}
+  let s=`<div class="side"${zl?` style="color:${zl.color}"`:""}>${zl?(zl.logo?`<img class="z-logo" src="${zl.logo}" alt="">`:"")+zl.name:"왼쪽 부스"}</div>`;for(let i=0;i<Math.min(4,n);i++)s+=row(i);
+  if(n>4){s+=`<div class="side"${zr?` style="color:${zr.color}"`:""}>${zr?(zr.logo?`<img class="z-logo" src="${zr.logo}" alt="">`:"")+zr.name:"오른쪽 부스"}</div>`;for(let i=4;i<n;i++)s+=row(i);}
   $("listBody").innerHTML=s;
   $("listBody").querySelectorAll("button.item").forEach(b=>b.onclick=()=>openBooth(+b.dataset.i));
   $("hallJump").innerHTML=HALL_KEYS.filter(k=>k!==hallKey).map(k=>`<button class="btn" type="button" data-hall="${k}">${HALLS[k].name}으로 →</button>`).join("");
@@ -1420,6 +1427,8 @@ setInterval(()=>{if(COUNTER.url&&hallKey&&!document.hidden)serverCount(false);},
   try{await Promise.race([Promise.all([document.fonts.load(`800 60px ${KR}`),document.fonts.load(`500 28px ${KR}`),document.fonts.load('140px "Bebas Neue"')]),new Promise(r=>setTimeout(r,2500))]);}catch(e){}
   await Promise.all(HALL_KEYS.filter(k=>HALLS[k].logo).map(k=>new Promise(res=>{const im=new Image();
     im.onload=()=>{HALLS[k].logoImg=im;res();};im.onerror=()=>res();im.src=HALLS[k].logo;})));
+  await Promise.all(HALL_KEYS.flatMap(k=>(HALLS[k].zones||[]).filter(z=>z.logo)).map(z=>new Promise(res=>{const im=new Image();
+    im.onload=()=>{z.logoImg=im;res();};im.onerror=()=>res();im.src=z.logo;})));
   addEventListener("hashchange",route);
   route();
   if(!HALLS[location.hash.slice(1)])$("loading").classList.add("done");
