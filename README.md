@@ -14,3 +14,8 @@
 4. 1~2분 뒤 `https://<아이디>.github.io/ansan-3d-showroom/` 주소로 열림
 
 전문관 바로가기: 주소 뒤에 `#major`, `#living`, `#mobile`
+
+## 누적 체험 고객 실시간 카운터 (선택)
+`counter-apps-script.gs` 파일 맨 위 설명대로 구글 Apps Script에 붙여넣고 웹 앱으로 배포한 뒤,
+나온 주소를 `index.html` 위쪽 `COUNTER` 의 `url:""` 안에 넣으면 모든 방문자의 입장이 합산돼요.
+주소를 넣기 전에는 각 휴대폰 안에서만 숫자가 올라가요.

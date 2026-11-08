@@ -72,8 +72,19 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .pin .stem{width:2px;height:34px;background:linear-gradient(var(--gold),rgba(201,168,106,.1))}
 .pin .dot{width:10px;height:10px;border-radius:50%;background:var(--paper);box-shadow:0 0 0 5px rgba(243,238,230,.18)}
 .pin:hover .tagbox{transform:translateY(-3px);background:rgba(14,12,16,.95)}
-.cards{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));
-  bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.bottomstack{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));
+  bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;flex-direction:column;gap:12px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.quick{align-self:flex-end;width:min(420px,100%);padding:20px 20px 18px;border-radius:20px;background:rgba(12,10,14,.95);
+  border:1px solid rgba(232,204,150,.45);box-shadow:0 24px 60px rgba(0,0,0,.35);color:#fff}
+.q-eye{font-size:12px;font-weight:700;letter-spacing:.14em;color:#ecd29c}
+.quick h2{margin:6px 0 0;font-size:24px;font-weight:900;line-height:1.25}
+.quick p{margin:6px 0 14px;font-size:13.5px;color:#e4dde4}
+.qbtns{display:flex;flex-direction:column;gap:8px}
+.qbtns button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:14px 16px;border-radius:12px;
+  border:0;border-left:5px solid var(--c);background:#fff;color:#141216;font-size:15.5px;font-weight:800;text-align:left}
+.qbtns button span{font-size:12.5px;font-weight:700;color:#5d565d;white-space:nowrap}
+.qbtns button:hover{background:#f3efe8}
 .card{text-align:left;border-radius:16px;padding:16px 18px;border:1px solid rgba(232,204,150,.3);
   background:rgba(12,10,14,.93);color:#fff;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;gap:4px;min-width:0;transition:background .2s,border-color .2s}
 .card:hover{background:rgba(30,26,34,.95);border-color:rgba(201,168,106,.5)}
@@ -97,6 +108,13 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .count{background:var(--paper);color:var(--ink);font-family:var(--f-num);font-size:18px;letter-spacing:.04em;
   border-radius:999px;padding:3px 10px 1px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .title b{font-weight:800;font-size:14px;white-space:nowrap}
+.tl{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.live{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:13px;font-weight:700;white-space:nowrap}
+.live i{width:8px;height:8px;border-radius:50%;background:#16b45a;box-shadow:0 0 0 0 rgba(22,180,90,.55);animation:pulse 1.8s infinite}
+.live b{font-family:var(--f-num);font-size:21px;line-height:1;color:var(--accent);font-weight:400;font-variant-numeric:tabular-nums;margin-top:2px}
+.live .sep{width:1px;height:13px;background:var(--line);margin:0 5px}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(22,180,90,0)}100%{box-shadow:0 0 0 0 rgba(22,180,90,0)}}
+@media (prefers-reduced-motion:reduce){.live i{animation:none}}
 .title span{color:var(--mute);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .btn{padding:9px 16px;font-weight:700;font-size:13.5px;border-radius:999px;border:1px solid var(--glassline);
@@ -167,6 +185,11 @@ a.btn.main{color:var(--ink)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 @media (max-width:720px){
+  .quick{align-self:stretch;width:auto;padding:16px}
+  .quick h2{font-size:21px}
+  .quick p{margin-bottom:10px}
+  .qbtns button{padding:12px 14px;font-size:15px}
+  .hero p{display:none}
   .cards{grid-template-columns:1fr;gap:8px}
   .card{padding:12px 14px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
   .card .ds,.card .bar,.card .en,.card .logo{display:none}
@@ -215,7 +238,11 @@ a.btn.main{color:var(--ink)}
 .chips button{padding:9px 13px;border-radius:999px;border:1.5px solid #cfc7bb;background:#fff;font-size:13.5px;font-weight:700;color:var(--paper)}
 .chips button[aria-pressed="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 #qMsg{white-space:pre-wrap;font:inherit;font-size:13.5px;background:var(--soft);border-radius:12px;padding:11px 13px;margin:8px 0 12px;line-height:1.6}
-#qGo{display:block;padding:13px 16px;font-size:15px}
+#qGo{display:block;padding:15px 16px;font-size:16px;font-weight:900}
+.st-foot{padding:12px 18px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--panel)}
+.pv{margin-top:8px}
+.pv summary{font-size:12.5px;color:var(--mute);font-weight:700;cursor:pointer}
+.pv #qMsg{margin:8px 0 0}
 .kinds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .kinds button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:12px;border:1.5px solid #cfc7bb;background:#fff;font-size:14.5px;font-weight:800;color:var(--paper)}
 .kinds button b{font-family:var(--f-num);font-size:22px;line-height:1;color:var(--accent);font-weight:400}
@@ -252,6 +279,29 @@ a.btn.main{color:var(--ink)}
 .seg button{padding:13px 8px;border-radius:12px;border:1.5px solid #cfc7bb;background:#fff;font-size:14.5px;font-weight:800;color:var(--paper)}
 .seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 @media (prefers-reduced-motion:reduce){#ask,.ask-card{transition:none}}
+.q-go{display:flex;align-items:center;justify-content:space-between;width:100%;padding:16px 18px;border-radius:14px;border:0;
+  background:#03c75a;color:#fff;font-size:17px;font-weight:900}
+.q-go span{font-size:20px}
+.q-go:hover{background:#02b351}
+#fast{position:fixed;inset:0;z-index:12;display:grid;place-items:center;background:rgba(12,10,14,.5);opacity:0;transition:opacity .25s;
+  padding:16px max(16px,env(safe-area-inset-right,0px)) 16px max(16px,env(safe-area-inset-left,0px));
+  --panel:#fbf9f5;--line:#e6dfd4;--paper:#1d1a17;--mute:#6f675f;--ink:#fbf9f5;--soft:#f1ece4;--accent:#e0322f;--gold:#9a7a46;color:var(--paper)}
+#fast.on{opacity:1}
+.fast-card{width:min(460px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--panel);
+  border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.fast-head{display:flex;gap:12px;align-items:center;padding:18px 18px 14px;border-bottom:1px solid var(--line)}
+.fast-body{padding:16px 18px 18px;overflow:auto;display:flex;flex-direction:column;gap:18px;min-height:0}
+.msgbox{white-space:pre-wrap;font:inherit;font-size:13.5px;background:var(--soft);border-radius:12px;padding:11px 13px;margin:8px 0 0;line-height:1.6}
+#fGo{display:block;padding:15px 16px;font-size:16px;font-weight:900;text-align:center}
+.seg.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg.four button{padding:13px 4px;font-size:14px}
+@media (max-width:720px){
+  #fast{place-items:end stretch;padding:0}
+  .fast-card{width:100%;max-height:92%;border-radius:20px 20px 0 0}
+  .q-go{padding:14px 16px;font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){#fast{transition:none}}
+
 
 
 </style>
@@ -266,15 +316,25 @@ a.btn.main{color:var(--ink)}
     <h1>안산선부점<br>온라인 체험관 <em>OPEN</em></h1>
     <p>세 개의 전문관을 직접 걸으며 제품 구성과 혜택가를 확인해 보세요. 마음에 드는 패키지는 바로 상담 문구로 남길 수 있어요.</p>
   </div>
-  <div id="pins"></div>
-  <div class="cards" id="cards"></div>
+  <div class="bottomstack">
+    <div class="quick" id="quick">
+      <div class="q-eye">QUICK INQUIRY</div>
+      <h2>체험 없이 빠르게 문의하기</h2>
+      <p>품목만 고르면 네이버 톡톡으로 바로 연결돼요</p>
+      <button class="q-go" id="quickGo" type="button">빠르게 문의하기<span aria-hidden="true">→</span></button>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
 </section>
 
 <!-- 전문관 -->
 <div id="hallUI" hidden>
   <div id="stage"></div>
   <div class="top">
-    <div class="title chip"><span class="count" id="count">0/8</span><b id="hallName"></b><span>부스를 누르면 구성과 금액이 나와요</span></div>
+    <div class="tl">
+      <div class="title chip"><span class="count" id="count">0/8</span><b id="hallName"></b><span>부스를 누르면 구성과 금액이 나와요</span></div>
+      <div class="live chip" aria-live="polite"><i aria-hidden="true"></i>누적 체험 고객 <b id="liveN">80</b>명<span class="sep" aria-hidden="true"></span>견적·구매 완료 고객 <b id="buyN">30</b>명</div>
+    </div>
     <div class="actions">
       <a class="btn book" id="topBook" href="#" target="_blank" rel="noopener" hidden>방문 예약</a>
       <a class="btn talk" id="topTalk" href="#" target="_blank" rel="noopener">톡톡 상담</a>
@@ -329,17 +389,17 @@ a.btn.main{color:var(--ink)}
     </div>
     <div class="st-body">
       <div id="fQuote" hidden class="stack">
-        <label class="fld" for="qSub"><span>견적 문의 종류</span>
+        <label class="fld" for="qSub" id="qSubWrap"><span>견적 문의 종류</span>
           <select id="qSub"><option value="">선택해 주세요</option><option value="solo">선부점 단독 패키지</option><option value="compare">다른 매장과 선부점 견적 비교</option></select></label>
         <div id="qSolo" hidden class="stack">
           <div><div class="sec-row"><span class="sec">패키지 선택 · 1개부터 가능</span><span class="cnt" id="pickCount">0개 선택</span></div><div class="checks" id="qBooths"></div></div>
           <label class="fld" for="sMemo"><span>추가로 남길 말 (선택)</span><textarea id="sMemo" rows="2" placeholder="예: 구성 변경이 가능한지 궁금해요"></textarea></label>
         </div>
         <div id="qCmp" hidden class="stack">
-          <div><div class="sec" style="margin-bottom:8px">어떤 준비이신가요?</div><div class="seg three" id="kinds"></div></div>
-          <label class="fld" for="cMonth"><span>배송 희망 시기 (월 단위)</span><select id="cMonth"></select></label>
-          <label class="fld" for="cArea"><span>배송 지역</span><input id="cArea" type="text" placeholder="예: 안산시 단원구 선부동" autocomplete="off"></label>
-          <label class="fld" for="cOther"><span>다른 매장 견적 (선택)</span><textarea id="cOther" rows="2" placeholder="예: OO매장 TV+냉장고 620만 원"></textarea></label>
+          <div><div class="sec" style="margin-bottom:8px">구매 유형</div><div class="seg four" id="kinds"></div></div>
+          <div><div class="sec" style="margin-bottom:8px">선호 브랜드</div><div class="seg three" id="brand"></div></div>
+          <label class="fld" for="cMonth"><span>배송 희망 시기</span><select id="cMonth"></select></label>
+          <label class="fld" for="cArea"><span>배송 지역 (동네까지만 적어도 돼요)</span><input id="cArea" type="text" placeholder="예: 안산 선부동" autocomplete="off"></label>
         </div>
       </div>
       <div id="fProduct" hidden class="stack">
@@ -363,12 +423,10 @@ a.btn.main{color:var(--ink)}
         <label class="fld" for="hMemo"><span>추가로 남길 말 (선택)</span><textarea id="hMemo" rows="2" placeholder="예: 한 달 데이터 10GB 정도 써요"></textarea></label>
       </div>
       <p class="need" id="qNeed" hidden></p>
-      <div id="qOut" hidden>
-        <div class="sec">톡톡으로 보낼 문구</div>
-        <pre id="qMsg"></pre>
-        <a class="btn talk" id="qGo" href="#" target="_blank" rel="noopener">톡톡으로 상담 연결</a>
-        <p class="note" style="margin-top:8px">누르면 문구가 복사되고 톡톡이 열려요. 붙여넣기만 하면 돼요.</p>
-      </div>
+    </div>
+    <div class="st-foot" id="qOut">
+      <a class="btn talk" id="qGo" href="#" target="_blank" rel="noopener">네이버 톡톡으로 바로 상담</a>
+      <details class="pv"><summary>톡톡에 붙여넣을 문구 보기</summary><pre id="qMsg"></pre></details>
     </div>
   </aside>
 
@@ -378,6 +436,47 @@ a.btn.main{color:var(--ink)}
       <p class="note">누르면 그 부스 앞으로 이동해요</p>
       <div id="listBody"></div>
       <div class="halls" id="hallJump"></div>
+    </div>
+  </div>
+</div>
+
+<div id="fast" hidden>
+  <div class="fast-card" role="dialog" aria-modal="true" aria-labelledby="fastTitle">
+    <div class="fast-head">
+      <div style="min-width:0;flex:1"><div class="eyebrow">하이마트 안산선부점</div><b class="st-name" id="fastTitle">체험 없이 빠르게 문의하기</b></div>
+      <button class="x" id="fastClose" type="button" aria-label="닫기">×</button>
+    </div>
+    <div class="fast-body">
+      <div><div class="sec" style="margin-bottom:8px">문의 희망 품목</div><div class="seg three" id="fCat"></div></div>
+      <div id="fBig" hidden class="stack">
+        <div><div class="sec" style="margin-bottom:8px">구매 유형</div><div class="seg four" id="fKind"></div></div>
+        <div><div class="sec" style="margin-bottom:8px">선호 브랜드</div><div class="seg three" id="fBrand"></div></div>
+        <label class="fld" for="fMonth"><span>배송 희망 시기</span><select id="fMonth"></select></label>
+        <label class="fld" for="fArea"><span>배송 지역 (동네까지만 적어도 돼요)</span><input id="fArea" type="text" placeholder="예: 안산 선부동" autocomplete="off"></label>
+      </div>
+      <div id="fLiving" hidden class="stack">
+        <label class="fld" for="fItem"><span>문의 품목</span><input id="fItem" type="text" placeholder="예: 식기세척기, 로봇청소기" autocomplete="off"></label>
+      </div>
+      <div id="fMobile" hidden class="stack">
+        <div><div class="sec" style="margin-bottom:8px">문의 유형</div><div class="seg three" id="fMType"></div></div>
+        <div id="fBuyBox" hidden class="stack">
+          <div><div class="sec" style="margin-bottom:8px">구매 방식</div><div class="seg two" id="fWay"></div></div>
+          <div id="fCarRow" hidden><div class="sec" style="margin-bottom:8px">통신사</div><div class="seg three" id="fCar"></div></div>
+          <label class="fld" for="fModel"><span>관심 기종 (선택)</span><select id="fModel"></select></label>
+        </div>
+        <div id="fUsedBox" hidden class="stack">
+          <label class="fld" for="fUModel"><span>판매할 기종</span><input id="fUModel" type="text" placeholder="예: 갤럭시 S23 256GB" autocomplete="off"></label>
+          <label class="fld" for="fUState"><span>기기 상태 (선택)</span><input id="fUState" type="text" placeholder="예: 액정 깨짐 없음" autocomplete="off"></label>
+        </div>
+        <div id="fHimoBox" hidden class="stack">
+          <label class="fld" for="fHNow"><span>지금 쓰는 통신사 (선택)</span>
+            <select id="fHNow"><option value="">선택 안 함</option><option>SKT</option><option>KT</option><option>U+</option><option>알뜰폰</option></select></label>
+        </div>
+      </div>
+    </div>
+    <div class="st-foot">
+      <a class="btn talk" id="fGo" href="#" target="_blank" rel="noopener">네이버 톡톡으로 바로 상담</a>
+      <details class="pv"><summary>톡톡에 붙여넣을 문구 보기</summary><pre id="fMsg" class="msgbox"></pre></details>
     </div>
   </div>
 </div>
@@ -393,6 +492,9 @@ a.btn.main{color:var(--ink)}
    spots : 사진 위 전문관 표시 위치 (x, y 는 화면 비율 %)
    =================================================================== */
 const STORE = "하이마트 안산선부점";
+/* 누적 체험 고객: base 에서 시작해 전문관에 입장할 때마다 1씩 늘어요. done 은 견적·구매 완료 고객 수.
+   url 에 구글 Apps Script 카운터 주소를 넣으면 모든 방문자의 입장이 실시간으로 합산돼요. */
+const COUNTER = {base:80, done:30, url:""};
 const TALK = "https://talk.naver.com/ct/w4ogcv?frm=mnmb&frm=nmb_att#nafullscreen";   // 네이버 톡톡 상담
 const LANDING = {
   image: "store.jpg", imageW:1079, imageH:811,
@@ -510,25 +612,14 @@ const total=k=>Math.min(8,HALLS[k].booths.length);
 function renderLanding(){
   const bg=$("landBg");
   if(LANDING.image){bg.classList.remove("placeholder");bg.style.backgroundImage=`url("${LANDING.image}")`;}
-  $("pins").innerHTML=HALL_KEYS.map(k=>{const h=HALLS[k];
-    return `<button class="pin" type="button" data-hall="${k}"><span class="tagbox"><b>${h.name}</b><small>${h.en}</small></span><span class="stem"></span><span class="dot"></span></button>`;}).join("");
+  $("quickGo").onclick=openFast;
   $("cards").innerHTML=HALL_KEYS.map(k=>{const h=HALLS[k];
     const head=h.logo?`<img class="logo" src="${h.logo}" alt="MOTOPIA">`:`<span class="en">${h.en}</span>`;
     return `<button class="card" type="button" data-hall="${k}"><span class="bar" style="background:${h.theme.cardBar||h.theme.accent}"></span>${head}<span class="nm">${h.name}</span><span class="ds">${h.desc}</span>${h.booking?`<span class="bk">네이버 예약 가능</span>`:""}<span class="ft"><span>${visited[k].size}/${total(k)} 둘러봄</span><b>입장하기 →</b></span></button>`;}).join("");
-  document.querySelectorAll("#landing [data-hall]").forEach(b=>b.onclick=()=>{location.hash=b.dataset.hall;});
-  placePins();
+  document.querySelectorAll("#cards [data-hall]").forEach(b=>b.onclick=()=>{location.hash=b.dataset.hall;});
   requestAnimationFrame(()=>$("landing").classList.add("ready"));
 }
-/* 사진이 화면을 꽉 채울 때(cover) 사진 속 위치를 화면 좌표로 바꿔 핀을 놓아요 */
-function placePins(){
-  const L=$("landing"),vw=L.clientWidth,vh=L.clientHeight;
-  const iw=LANDING.imageW||vw,ih=LANDING.imageH||vh,sc=Math.max(vw/iw,vh/ih);
-  const ox=(vw-iw*sc)/2,oy=(vh-ih*sc)/2;
-  document.querySelectorAll("#pins .pin").forEach(p=>{const s=LANDING.spots[p.dataset.hall]||{x:50,y:50};
-    const x=ox+iw*sc*s.x/100,y=oy+ih*sc*s.y/100;
-    p.style.left=Math.max(70,Math.min(vw-70,x))+"px";p.style.top=y+"px";});
-}
-addEventListener("resize",()=>{if(!$("landing").hidden)placePins();});
+
 
 /* ---------------- three.js world ---------------- */
 let renderer,camera,world=null,worlds={},hallKey=null;
@@ -898,7 +989,9 @@ function enterHall(k){
     $("hint").textContent=COARSE?"밀어서 둘러보기 · 바닥 터치로 이동 · 부스를 터치하면 구성과 금액":"드래그로 둘러보기 · 바닥 클릭으로 이동 · W A S D · 부스를 클릭하면 구성과 금액";
     hintOff=false;$("hint").classList.remove("off");
     $("loading").classList.add("done");
-    $("hint").classList.add("off");showAsk();
+    $("hint").classList.add("off");
+    if(pendingOpen&&pendingOpen.hall===k){const po=pendingOpen;pendingOpen=null;openPanel(po.menu,po.label);}else showAsk();
+    bumpCount(k);
   },30);
 }
 function updateCount(){$("count").textContent=`${visited[hallKey].size}/${total(hallKey)}`;}
@@ -990,17 +1083,17 @@ const MENUS={
   mobile:[["buy","구매 문의","통신사 개통 · 자급제"],["used","중고폰 판매 문의","쓰던 폰 시세 · 보상 판매"],["himo","최저가 하이모바일 문의","알뜰한 요금제 상담"]]
 };
 const TOPICS=["재고·입고 일정","배송·설치 일정","카드·구독 혜택","모델 차이","최종 혜택가"];
-const KINDS=[["wedding","웨딩(혼수)"],["movein","입주"],["moving","이사"]];
+const KINDS=[["wedding","웨딩"],["movein","입주"],["moving","이사"],["replace","교체"]];
 const CARRIERS=["SKT","KT","U+"];
 const priceText=p=>(p.monthly?"월 ":"")+won(p.price)+"원";
 let mode="";
 function monthOptions(){const d=new Date(),out=[];for(let i=0;i<13;i++){const m=new Date(d.getFullYear(),d.getMonth()+i,1);out.push(`${m.getFullYear()}년 ${m.getMonth()+1}월`);}return out;}
-function segInit(id,items,multi){
+function segInit(id,items,multi,cb){cb=cb||refreshQ;
   $(id).innerHTML=items.map(([v,l],i)=>`<button type="button" data-v="${v}" aria-pressed="false">${l}</button>`).join("");
   $(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{
     if(multi)b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true");
     else $(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
-    refreshQ();});
+    cb();});
 }
 const segVal=id=>{const b=document.querySelector(`#${id} [aria-pressed=true]`);return b?b.dataset.v:"";};
 const segLabel=id=>{const b=document.querySelector(`#${id} [aria-pressed=true]`);return b?b.textContent:"";};
@@ -1027,10 +1120,12 @@ function openPanel(v,label){
   const h=HALLS[hallKey],bs=h.booths.slice(0,8);mode=v;
   $("stEye").textContent=h.name;$("stTitle").textContent=label;
   ["fQuote","fProduct","fBuy","fUsed","fHimo"].forEach(id=>$(id).hidden=true);
-  const fid={quote:"fQuote",product:"fProduct",buy:"fBuy",used:"fUsed",himo:"fHimo"}[v];$(fid).hidden=false;
+  const fid={quote:"fQuote",fast:"fQuote",product:"fProduct",buy:"fBuy",used:"fUsed",himo:"fHimo"}[v];$(fid).hidden=false;
+  $("qSubWrap").hidden=v==="fast";
   // 공통 초기화
   ["qSub","cMonth","pSel","bModel","hNow"].forEach(id=>{if($(id))$(id).value="";});
-  ["cArea","cOther","pMore","sMemo","bMemo","uModel","uMemo","hMemo"].forEach(id=>$(id).value="");
+  ["cArea","pMore","sMemo","bMemo","uModel","uMemo","hMemo"].forEach(id=>$(id).value="");
+  if(v==="fast")$("qSub").value="compare";
   $("qBooths").innerHTML=bs.map((p,i)=>`<label class="ck" for="qb${i}"><input type="checkbox" id="qb${i}" value="${i}"><span>${p.brand} ${p.name}</span><em>${priceText(p)}</em></label>`).join("");
   $("qBooths").querySelectorAll("input").forEach(x=>x.onchange=refreshQ);
   if(current>=0&&current<bs.length)$("qb"+current).checked=true;
@@ -1039,6 +1134,7 @@ function openPanel(v,label){
   $("bModel").innerHTML=`<option value="">아직 미정</option>`+bs.map((p,i)=>`<option value="${i}">${p.brand} ${p.name}</option>`).join("");
   $("cMonth").innerHTML=`<option value="">선택해 주세요</option>`+monthOptions().map(m=>`<option>${m}</option>`).join("")+`<option>아직 미정</option>`;
   segInit("kinds",KINDS.map(([v,l],i)=>[v,`${i+1}. ${l}`]));
+  segInit("brand",[["삼성","삼성"],["LG","LG"],["상관없음","상관없음"]]);
   segInit("topics",TOPICS.map(x=>[x,x]),true);
   segInit("bWay",[["carrier","통신향 (통신사 개통)"],["free","자급제"]]);
   segInit("bCarrier",CARRIERS.map(x=>[x,x]));
@@ -1046,47 +1142,44 @@ function openPanel(v,label){
 }
 function closePanel(){$("staff").classList.add("closed");}
 function refreshQ(){
+  /* 어떤 선택도 필수가 아니에요: 고른 만큼만 문구에 담고 톡톡 버튼은 항상 바로 누를 수 있어요 */
   const h=HALLS[hallKey];if(!h)return;const head=`[${STORE} · ${h.name}]`;
-  let msg="",link=h.talk||TALK,need="";
-  if(mode==="quote"){
+  let msg="",link=h.talk||TALK;
+  const add=(k,v)=>v?`\n${k}: ${v}`:"";
+  if(mode==="quote"||mode==="fast"){
     const sub=$("qSub").value;
     $("qSolo").hidden=sub!=="solo";$("qCmp").hidden=sub!=="compare";
     const picked=[...document.querySelectorAll("#qBooths input:checked")].map(x=>+x.value);
     $("pickCount").textContent=`${picked.length}개 선택`;
-    if(!sub)need="견적 문의 종류를 골라 주세요";
-    else if(sub==="solo"){
-      if(!picked.length)need="문의할 패키지를 1개 이상 골라 주세요";
-      else{const memo=$("sMemo").value.trim();
-        msg=`${head} 선부점 단독 패키지 견적 문의드려요.\n`+picked.map((i,k)=>`${k+1}) ${h.booths[i].brand} ${h.booths[i].name} (${priceText(h.booths[i])})`).join("\n")+(memo?`\n추가 내용: ${memo}`:"");
-        if(picked.length===1&&h.booths[picked[0]].talk)link=h.booths[picked[0]].talk;}}
-    else{const kind=segLabel("kinds").replace(/^\d\.\s*/,"");
-      if(!kind)need="1. 웨딩  2. 입주  3. 이사 중 유형을 골라 주세요";
-      else{const mo=$("cMonth").value,area=$("cArea").value.trim(),other=$("cOther").value.trim();
-        msg=`${head} 다른 매장 견적과 선부점 견적 비교 요청드려요.\n유형: ${kind}`+(mo?`\n배송 희망 시기: ${mo}`:"")+(area?`\n배송 지역: ${area}`:"")+(other?`\n다른 매장 견적: ${other}`:"");}}
+    if(sub==="solo"){const memo=$("sMemo").value.trim();
+      msg=`${head} 선부점 단독 패키지 견적 문의드려요.`+(picked.length?"\n"+picked.map((i,k)=>`${k+1}) ${h.booths[i].brand} ${h.booths[i].name} (${priceText(h.booths[i])})`).join("\n"):"")+add("추가 내용",memo);
+      if(picked.length===1&&h.booths[picked[0]].talk)link=h.booths[picked[0]].talk;}
+    else if(sub==="compare"){
+      const kind=segLabel("kinds").replace(/^\d\.\s*/,"");
+      msg=`${head} `+(mode==="fast"?"견적 문의드려요.":"다른 매장 견적과 선부점 견적 비교 요청드려요.")+
+        add("구매 유형",kind)+add("선호 브랜드",segVal("brand"))+add("배송 희망 시기",$("cMonth").value)+add("배송 지역",$("cArea").value.trim());}
+    else msg=`${head} 견적 문의드려요.`;
   }
   if(mode==="product"){const p=h.booths[+$("pSel").value||0];
-    const tp=[...document.querySelectorAll("#topics [aria-pressed=true]")].map(b=>b.textContent),more=$("pMore").value.trim();
-    msg=`${head} ${p.brand} ${p.name} (${priceText(p)}) 문의드려요.`+(tp.length?`\n궁금한 점: ${tp.join(", ")}`:"")+(more?`\n추가 내용: ${more}`:"");
+    const tp=[...document.querySelectorAll("#topics [aria-pressed=true]")].map(b=>b.textContent);
+    msg=`${head} ${p.brand} ${p.name} (${priceText(p)}) 문의드려요.`+add("궁금한 점",tp.join(", "))+add("추가 내용",$("pMore").value.trim());
     link=p.talk||link;}
   if(mode==="buy"){const way=segVal("bWay"),car=segVal("bCarrier");$("bCarRow").hidden=way!=="carrier";
-    if(!way)need="통신향 또는 자급제를 골라 주세요";
-    else if(way==="carrier"&&!car)need="SKT · KT · U+ 중 통신사를 골라 주세요";
-    else{const mi=$("bModel").value,memo=$("bMemo").value.trim();const p=mi!==""?h.booths[+mi]:null;
-      msg=`${head} 휴대폰 구매 문의드려요.\n구매 방식: ${way==="carrier"?`통신향 (${car})`:"자급제"}\n관심 기종: ${p?`${p.brand} ${p.name}`:"상담 후 결정"}`+(memo?`\n추가 내용: ${memo}`:"");
-      if(p&&p.talk)link=p.talk;}}
-  if(mode==="used"){const m=$("uModel").value.trim(),memo=$("uMemo").value.trim();
-    msg=`${head} 중고폰 판매 문의드려요.\n판매할 기종: ${m||"상담 시 안내"}`+(memo?`\n추가 내용: ${memo}`:"");}
-  if(mode==="himo"){const now=$("hNow").value,memo=$("hMemo").value.trim();
-    msg=`${head} 최저가 하이모바일 요금제 문의드려요.`+(now?`\n현재 통신사: ${now}`:"")+(memo?`\n추가 내용: ${memo}`:"");}
-  $("qNeed").textContent=need;$("qNeed").hidden=!need;
-  $("qOut").hidden=!msg;$("qMsg").textContent=msg;$("qGo").href=link;$("qGo").dataset.msg=msg;
+    const mi=$("bModel").value,p=mi!==""?h.booths[+mi]:null;
+    msg=`${head} 휴대폰 구매 문의드려요.`+add("구매 방식",way==="carrier"?`통신향${car?` (${car})`:""}`:way==="free"?"자급제":"")+
+      add("관심 기종",p?`${p.brand} ${p.name}`:"")+add("추가 내용",$("bMemo").value.trim());
+    if(p&&p.talk)link=p.talk;}
+  if(mode==="used")msg=`${head} 중고폰 판매 문의드려요.`+add("판매할 기종",$("uModel").value.trim())+add("기기 상태",$("uMemo").value.trim());
+  if(mode==="himo")msg=`${head} 최저가 하이모바일 요금제 문의드려요.`+add("현재 통신사",$("hNow").value)+add("추가 내용",$("hMemo").value.trim());
+  $("qNeed").hidden=true;
+  $("qMsg").textContent=msg;$("qGo").href=link;$("qGo").dataset.msg=msg;
 }
 function copyText(text){
   const fail=()=>toast("문구를 길게 눌러 복사한 뒤 톡톡에 붙여넣어 주세요");
   try{navigator.clipboard.writeText(text).then(()=>toast("상담 문구를 복사했어요. 톡톡에 붙여넣어 주세요"),fail);}catch(e){fail();}
 }
 ["qSub","pSel","cMonth","bModel","hNow"].forEach(id=>$(id).onchange=refreshQ);
-["pMore","sMemo","cArea","cOther","bMemo","uModel","uMemo","hMemo"].forEach(id=>$(id).oninput=refreshQ);
+["pMore","sMemo","cArea","bMemo","uModel","uMemo","hMemo"].forEach(id=>$(id).oninput=refreshQ);
 $("qGo").addEventListener("click",()=>copyText($("qGo").dataset.msg||""));
 $("stClose").onclick=closePanel;
 $("stBack").onclick=()=>{closePanel();showAsk();toggleMenu();};
@@ -1095,6 +1188,58 @@ $("askClose").onclick=()=>pickMenu("browse");
 $("openAsk").onclick=()=>showAsk();
 
 $("askSub").textContent=`${COARSE?"터치":"클릭"}해서 원하는 항목을 골라 주세요`;
+
+/* ---------------- 메인 화면: 체험 없이 빠르게 문의하기 ---------------- */
+function openFast(){
+  const cb=refreshFast;
+  segInit("fCat",[["big","1. 대형가전"],["living","2. 생활/주방가전"],["mobile","3. 모바일"]],false,cb);
+  segInit("fKind",KINDS.map(([v,l],i)=>[l,`${i+1}. ${l}`]),false,cb);
+  segInit("fBrand",[["삼성","삼성"],["LG","LG"],["상관없음","상관없음"]],false,cb);
+  segInit("fMType",[["buy","구매 문의"],["used","중고폰 판매"],["himo","최저가 하이모바일"]],false,cb);
+  segInit("fWay",[["carrier","통신향"],["free","자급제"]],false,cb);
+  segInit("fCar",CARRIERS.map(x=>[x,x]),false,cb);
+  $("fMonth").innerHTML=`<option value="">선택해 주세요</option>`+monthOptions().map(m=>`<option>${m}</option>`).join("")+`<option>아직 미정</option>`;
+  $("fModel").innerHTML=`<option value="">아직 미정</option>`+HALLS.mobile.booths.map(p=>`<option>${p.brand} ${p.name}</option>`).join("");
+  ["fArea","fItem","fUModel","fUState","fHNow"].forEach(id=>$(id).value="");
+  refreshFast();$("fast").hidden=false;requestAnimationFrame(()=>$("fast").classList.add("on"));
+}
+function closeFast(){$("fast").classList.remove("on");setTimeout(()=>{if(!$("fast").classList.contains("on"))$("fast").hidden=true;},reduce?0:250);}
+function refreshFast(){
+  const cat=segVal("fCat"),mt=segVal("fMType"),way=segVal("fWay"),head=`[${STORE} · 빠른 문의]`;
+  const add=(k,v)=>v?`\n${k}: ${v}`:"";
+  $("fBig").hidden=cat!=="big";$("fLiving").hidden=cat!=="living";$("fMobile").hidden=cat!=="mobile";
+  $("fBuyBox").hidden=mt!=="buy";$("fUsedBox").hidden=mt!=="used";$("fHimoBox").hidden=mt!=="himo";$("fCarRow").hidden=way!=="carrier";
+  let msg=`${head} 문의드려요.`;
+  if(cat==="big")msg=`${head} 대형가전 견적 문의드려요.`+add("구매 유형",segVal("fKind"))+add("선호 브랜드",segVal("fBrand"))+add("배송 희망 시기",$("fMonth").value)+add("배송 지역",$("fArea").value.trim());
+  if(cat==="living")msg=`${head} 생활/주방가전 문의드려요.`+add("문의 품목",$("fItem").value.trim());
+  if(cat==="mobile"){
+    if(mt==="buy"){const car=segVal("fCar");msg=`${head} 휴대폰 구매 문의드려요.`+add("구매 방식",way==="carrier"?`통신향${car?` (${car})`:""}`:way==="free"?"자급제":"")+add("관심 기종",$("fModel").value);}
+    else if(mt==="used")msg=`${head} 중고폰 판매 문의드려요.`+add("판매할 기종",$("fUModel").value.trim())+add("기기 상태",$("fUState").value.trim());
+    else if(mt==="himo")msg=`${head} 최저가 하이모바일 요금제 문의드려요.`+add("현재 통신사",$("fHNow").value);
+    else msg=`${head} 모바일 문의드려요.`;}
+  $("fMsg").textContent=msg;$("fGo").href=TALK;$("fGo").dataset.msg=msg;
+}
+["fMonth","fModel","fHNow"].forEach(id=>$(id).onchange=refreshFast);
+["fArea","fItem","fUModel","fUState"].forEach(id=>$(id).oninput=refreshFast);
+$("fGo").addEventListener("click",()=>copyText($("fGo").dataset.msg||""));
+$("fastClose").onclick=closeFast;
+$("fast").addEventListener("click",e=>{if(e.target.id==="fast")closeFast();});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("fast").hidden)closeFast();});
+
+/* ---------------- 이용자 수 ---------------- */
+let pendingOpen=null;
+function localCount(inc){try{let n=+(localStorage.getItem("cnt_all")||0);if(inc){n++;localStorage.setItem("cnt_all",String(n));}return n;}catch(e){return inc?1:0;}}
+let lastCount=0;
+function showCount(n){if(n<lastCount)return;lastCount=n;$("liveN").textContent=n.toLocaleString("ko-KR");$("buyN").textContent=COUNTER.done.toLocaleString("ko-KR");}
+async function serverCount(hit){
+  try{const r=await fetch(`${COUNTER.url}?hit=${hit?1:0}`);const j=await r.json();if(typeof j.count==="number")showCount(COUNTER.base+j.count);}catch(e){}
+}
+function bumpCount(k){
+  if(COUNTER.url){if(!lastCount)showCount(COUNTER.base);serverCount(true);}
+  else showCount(COUNTER.base+localCount(true));
+}
+/* 전문관 안에 있는 동안 20초마다 다른 방문자 입장을 반영 */
+setInterval(()=>{if(COUNTER.url&&hallKey&&!document.hidden)serverCount(false);},20000);
 /* ---------------- boot ---------------- */
 (async function(){
   if(!window.THREE){$("loading").querySelector("p").textContent="3D 엔진을 불러오지 못했어요. 새로고침해 주세요.";return;}
